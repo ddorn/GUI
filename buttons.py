@@ -1,3 +1,7 @@
+"""
+This module provides a few buttons for an easy pygame GUI.
+"""
+
 import pygame
 from _thread import start_new_thread
 from time import time
@@ -15,22 +19,45 @@ except ImportError:
 
 
 class BaseButton(BaseWidget):
+    """ Abstract base class for any button """
+    
     def __init__(self, func, rect):
+        """
+        Creates a new BaseButton object.
+        
+        :param func: calback function that takes no argument
+        :param rect: the widget rect
+        """
         super().__init__(rect)
         self.func = func
         self.pressed = False
 
     def press(self):
+        """ Call when the button is pressed. This start the callback function in a thread """
         start_new_thread(self.func, ())
         self.pressed = True
 
     def release(self):
+        """ Call this when the button is released """
         self.pressed = False
 
 
 class Button(BaseButton):
-    def __init__(self, func, rect, text='Go!', color=GREEN, color_pressed=None):
+    """ A basic button. """
+    
+    def __init__(self, func, rect, text='', color=GREEN, color_pressed=None):
+        """
+        Creates a clickable button.
+        
+        :param func: callback function wih no arguments
+        :param rect: widget rect
+        :param text: Text to be displayed on the button
+        :param color: the natural color of the button
+        :param color_pressed: color of the button when it is pressed 
+        """
+        
         super().__init__(func, rect)
+        
         self.text = text
         self.color = color
 
@@ -57,7 +84,17 @@ class Button(BaseButton):
 
 
 class IconButton(BaseButton):
+    """ A button with a **square** icon intead of a text. """
+
     def __init__(self, func, rect, icon_path):
+        """
+        Creates an IconButton.
+        
+        :param func: callback function
+        :param rect: widget rect
+        :param icon_path: path to the icon to display
+        """
+        
         super().__init__(func, rect)
 
         # making the rect a square
@@ -82,6 +119,8 @@ class IconButton(BaseButton):
         self.icon_pressed = icon_pressed
 
     def render(self, display):
+        """ Render the button """
+        
         if self.pressed:
             icon = self.icon_pressed
         else:
@@ -145,10 +184,12 @@ class SlideBar(BaseWidget):
                     start_new_thread(self.func, (self.value,))
 
     def start(self):
+        """ Starts the checking function in a thread. Don't call this twice. """
         start_new_thread(self._start, ())
 
     @property
     def value_px(self):
+        """ The position in pixels of the cursor """
         return self.x + self.width / (self.max - self.min) * self.value
 
     @value_px.setter
@@ -161,16 +202,19 @@ class SlideBar(BaseWidget):
         self.value = round(real / self.step) * self.step
 
     def render(self, display):
+        """ Renders the bar on the display """
+        
         # the bar
         bar_rect = pygame.Rect(0, 0, self.width, self.height // 3)
         bar_rect.center = self.center
-
         display.fill(self.bg_color, bar_rect)
 
+        # the cursor
         circle(display, self.value_px, self.centery, self.height // 2, self.color)
 
 
 __all__ = ["Button", "IconButton", "SlideBar"]
+
 
 if __name__ == '__main__':
     display = pygame.display.set_mode((300, 200))
