@@ -3,10 +3,9 @@
 import pygame
 
 try:
-    from locals import *
-except ImportError:
     from .locals import *
-
+except ImportError:
+    from locals import *
 
 class BaseWidget(pygame.Rect):
     """ The base class for any widget """

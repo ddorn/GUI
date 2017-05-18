@@ -142,8 +142,8 @@ class SlideBar(BaseWidget):
     Don't forget to call focus() and unfocus() when the user click on the SlideBar
     """
 
-    def __init__(self, func, pos, size, min_=0., max_=100., step=1., color=BLUE, bg_color=LIGHT_GREY, show_val=True,
-                 interval=1, autostart=True, anchor=CENTER):
+    def __init__(self, func, pos, size, min_=0., max_=100., step=1., color=BLUE, *, bg_color=LIGHT_GREY, show_val=True,
+                 interval=1, autostart=True, anchor=CENTER, inital=None):
         """
         Creates a SlideBar.
         
@@ -166,7 +166,7 @@ class SlideBar(BaseWidget):
         self.color = color
         self.bg_color = bg_color
         self.func = func
-        self.value = min_
+        self.value = inital if inital is not None else min_
         self.min = min_
         self.max = max_
         self.step = step
@@ -179,7 +179,7 @@ class SlideBar(BaseWidget):
             self.start()
 
     def __repr__(self):
-        return f'SlideBar({self.min}:{self.max}:{self.step}; {super().__repr__(self)}, Value: {self.value})'
+        return f'SlideBar({self.min}:{self.max}:{self.step}; {super().__repr__()}, Value: {self.value})'
 
     def get(self):
         """ The current value of the bar """
@@ -198,7 +198,7 @@ class SlideBar(BaseWidget):
         while True:
 
             mouse = pygame.mouse.get_pos()
-            if (mouse in self) and self._focus:
+            if self.left <= mouse[0] <= self.right and self._focus:
                 self.value_px = mouse[0]
 
                 if last_call + self.interval / 1000 < time():
@@ -212,7 +212,8 @@ class SlideBar(BaseWidget):
     @property
     def value_px(self):
         """ The position in pixels of the cursor """
-        return self.x + self.width / (self.max - self.min) * self.value
+        step = self.w / (self.max - self.min)
+        return self.x + step * (self.value - self.min)  # -self.min so self.x is the minimum possible place
 
     @value_px.setter
     def value_px(self, value):
@@ -221,7 +222,7 @@ class SlideBar(BaseWidget):
         delta_x = value - self.x
         prop = delta_x / self.width
         real = prop * (self.max - self.min)
-        self.value = round(real / self.step) * self.step
+        self.value = self.min + round(real / self.step) * self.step
 
     def render(self, display):
         """ Renders the bar on the display """
