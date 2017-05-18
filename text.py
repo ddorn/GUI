@@ -80,9 +80,7 @@ class SimpleText(BaseWidget):
         self._surface = self.font.render(self.text, True, self.color)
         rect = self._surface.get_rect()
 
-        anchor = getattr(self, self.anchor)
         self.size = rect.size
-        setattr(self, self.anchor, anchor)
 
     def render(self, display):
         """ Render basicly the text """
@@ -91,7 +89,7 @@ class SimpleText(BaseWidget):
         if self.text != self._last_text:
             self._render()
 
-        display.blit(self._surface, self)
+        display.blit(self._surface, (self.topleft, self.size))
 
 
 __all__ = ['SimpleText']

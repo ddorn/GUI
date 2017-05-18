@@ -13,8 +13,10 @@ try:
     from .locals import *
     from .font import *
     from .draw import *
+    from .colors import bw_contrasted
 except ImportError:
     from base import BaseWidget
+    from colors import bw_contrasted
     from locals import *
     from font import *
     from draw import *
@@ -82,8 +84,8 @@ class Button(BaseButton):
         
         pygame.draw.rect(display, color, self)
 
-        text_color = [WHITE, BLACK][sum(color) / 3 > 200]
-
+        text_color = bw_contrasted(color)
+        
         text_surf = DEFAULT.render(self.text, True, text_color, color)
         text_rect = text_surf.get_rect()
         text_rect.center = self.center
@@ -170,7 +172,9 @@ class SlideBar(BaseWidget):
         self.max = max_
         self.step = step
         self.show_val = show_val
-        self.text_val = SimpleText(self.get, self.center)
+        
+        font = Font(self.height // 2)
+        self.text_val = SimpleText(self.get, lambda: (self.value_px, self.centery), bw_contrasted(self.color), font)
 
         self.interval = interval
 
@@ -234,9 +238,13 @@ class SlideBar(BaseWidget):
 
         # the cursor
         circle(display, (self.value_px, self.centery), self.height // 2, self.color)
-
+        
+        # the value
+        if self.show_val:
+            self.text_val.render(display)
 
 __all__ = ["Button", "IconButton", "SlideBar"]
+
 
 if __name__ == '__main__':
     display = pygame.display.set_mode((300, 200))
