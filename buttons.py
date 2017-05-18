@@ -188,12 +188,13 @@ class SlideBar(BaseWidget):
         start_new_thread(self.func, (self.value,))
 
     def _start(self):
-        """ Starts checking forever if the button is clicked """
-
+        """ Starts checking if the SB is shifted """
+        
         last_call = 42
         while self._focus:
             sleep(1/100)
 
+            
             mouse = pygame.mouse.get_pos()
             if self.left <= mouse[0] <= self.right:
                 self.value_px = mouse[0]
@@ -203,9 +204,11 @@ class SlideBar(BaseWidget):
                     self.func(self.value)
 
     def focus(self):
-        """ Starts the checking function in a thread. Don't call this twice. """
-        start_new_thread(self._start, ())
-
+        """ Gives the focus to the widget """
+        self._focus = True
+        
+        start_new_thread(SlideBar._start, (self,))
+        
     @property
     def value_px(self):
         """ The position in pixels of the cursor """
