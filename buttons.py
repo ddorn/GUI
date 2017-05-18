@@ -4,7 +4,7 @@ This module provides a few buttons for an easy pygame GUI.
 
 import pygame
 from _thread import start_new_thread
-from time import time
+from time import time, sleep
 
 from GUI.text import SimpleText
 
@@ -143,7 +143,7 @@ class SlideBar(BaseWidget):
     """
 
     def __init__(self, func, pos, size, min_=0., max_=100., step=1., color=BLUE, *, bg_color=LIGHT_GREY, show_val=True,
-                 interval=1, autostart=True, anchor=CENTER, inital=None):
+                 interval=1, anchor=CENTER, inital=None):
         """
         Creates a SlideBar.
         
@@ -158,7 +158,6 @@ class SlideBar(BaseWidget):
         :param color: color of the cursor
         :param bg_color: color of the background
         :param interval: minimum milisec elapsed between two calls to *func*
-        :param autostart: starts looking directly if it receives inputs
         """
 
         super().__init__(pos, size, anchor)
@@ -174,9 +173,6 @@ class SlideBar(BaseWidget):
         self.text_val = SimpleText(self.get, self.center)
 
         self.interval = interval
-
-        if autostart:
-            self.start()
 
     def __repr__(self):
         return f'SlideBar({self.min}:{self.max}:{self.step}; {super().__repr__()}, Value: {self.value})'
@@ -195,17 +191,18 @@ class SlideBar(BaseWidget):
         """ Starts checking forever if the button is clicked """
 
         last_call = 42
-        while True:
+        while self._focus:
+            sleep(1/100)
 
             mouse = pygame.mouse.get_pos()
-            if self.left <= mouse[0] <= self.right and self._focus:
+            if self.left <= mouse[0] <= self.right:
                 self.value_px = mouse[0]
 
                 if last_call + self.interval / 1000 < time():
                     last_call = time()
-                    start_new_thread(self.func, (self.value,))
+                    self.func(self.value)
 
-    def start(self):
+    def focus(self):
         """ Starts the checking function in a thread. Don't call this twice. """
         start_new_thread(self._start, ())
 
