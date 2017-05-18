@@ -30,10 +30,8 @@ class SimpleText(BaseWidget):
             See http://www.pygame.org/docs/ref/rect.html#pygame.Rect for a list of possible anchors.
         """
         
-        super().__init__((0, 0, 0, 0))
-        setattr(self, anchor, pos)
+        super().__init__(pos, (0, 0), anchor)
 
-        self.anchor = anchor
         self.font = font
         self._color = color
         self._last_text = ...
@@ -50,7 +48,7 @@ class SimpleText(BaseWidget):
         """ Returns the string to render """
         
         if callable(self._text):
-            return self._text()
+            return str(self._text())
         return str(self._text)
 
     @text.setter
@@ -83,8 +81,7 @@ class SimpleText(BaseWidget):
         rect = self._surface.get_rect()
 
         anchor = getattr(self, self.anchor)
-        self.w = rect.w
-        self.h = rect.h
+        self.size = rect.size
         setattr(self, self.anchor, anchor)
 
     def render(self, display):
