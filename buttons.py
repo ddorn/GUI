@@ -6,13 +6,15 @@ import pygame
 from _thread import start_new_thread
 from time import time
 
+from GUI.text import SimpleText
+
 try:
     from .base import BaseWidget
     from .locals import *
     from .font import *
     from .draw import *
 except ImportError:
-    from base import *
+    from base import BaseWidget
     from locals import *
     from font import *
     from draw import *
@@ -20,15 +22,16 @@ except ImportError:
 
 class BaseButton(BaseWidget):
     """ Abstract base class for any button """
-    
-    def __init__(self, func, rect):
+
+    def __init__(self, func, pos, size, anchor):
         """
         Creates a new BaseButton object.
         
         :param func: calback function that takes no argument
-        :param rect: the widget rect
+        :param pos: the widget pos. Can be a callable or a 2-tuple
+        :size: the width size. Can be a callable or a 2-tuple
         """
-        super().__init__(rect)
+        super().__init__(pos, size, anchor)
         self.func = func
         self.pressed = False
 
@@ -41,23 +44,28 @@ class BaseButton(BaseWidget):
         """ Call this when the button is released """
         self.pressed = False
 
+    def render(self, display):
+        raise NotImplementedError
+
 
 class Button(BaseButton):
     """ A basic button. """
-    
-    def __init__(self, func, rect, text='', color=GREEN, color_pressed=None):
+
+    def __init__(self, func, pos, size, text='', color=GREEN, color_pressed=None, anchor=CENTER):
         """
         Creates a clickable button.
         
         :param func: callback function wih no arguments
-        :param rect: widget rect
+        :param size: widget size. Can be a callable or a 2-tuple.
+        :param pos: widget position. Can be a callable or a 2-tuple.
+        :param anchor: widget anchor
         :param text: Text to be displayed on the button
         :param color: the natural color of the button
-        :param color_pressed: color of the button when it is pressed 
+        :param color_pressed: color of the button when it is pressed
         """
-        
-        super().__init__(func, rect)
-        
+
+        super().__init__(func, pos, size, anchor)
+
         self.text = text
         self.color = color
 
@@ -71,7 +79,7 @@ class Button(BaseButton):
             color = self.color_pressed
         else:
             color = self.color
-
+        
         pygame.draw.rect(display, color, self)
 
         text_color = [WHITE, BLACK][sum(color) / 3 > 200]
@@ -86,21 +94,19 @@ class Button(BaseButton):
 class IconButton(BaseButton):
     """ A button with a **square** icon intead of a text. """
 
-    def __init__(self, func, rect, icon_path):
+    def __init__(self, func, pos, size: int, icon_path, anchor=CENTER):
         """
         Creates an IconButton.
         
+        :param size: widget size. Can be a callable or a 2-tuple.
+        :param pos: widget position. Can be a callable or a 2-tuple.
+        :param anchor: widget anchor
         :param func: callback function
-        :param rect: widget rect
         :param icon_path: path to the icon to display
         """
-        
-        super().__init__(func, rect)
 
         # making the rect a square
-        center = self.center
-        self.w = self.h = min(self.size)
-        self.center = center
+        super().__init__(func, pos, (size, size), anchor)
 
         icon = pygame.image.load(icon_path)
         icon = pygame.transform.smoothscale(icon, self.size)
@@ -120,7 +126,7 @@ class IconButton(BaseButton):
 
     def render(self, display):
         """ Render the button """
-        
+
         if self.pressed:
             icon = self.icon_pressed
         else:
@@ -131,35 +137,41 @@ class IconButton(BaseButton):
 
 class SlideBar(BaseWidget):
     """
-    A slide bar to bick a value in a range. 
+    A slide bar to bick a value in a range.
     
     Don't forget to call focus() and unfocus() when the user click on the SlideBar
     """
 
-    def __init__(self, func, rect, min_=0., max_=100., step=1., color=LIGHT_GREY, bg_color=BLUE, interval: "ms" = 1,
-                 autostart=True):
+    def __init__(self, func, pos, size, min_=0., max_=100., step=1., color=BLUE, bg_color=LIGHT_GREY, show_val=True,
+                 interval=1, autostart=True, anchor=CENTER):
         """
         Creates a SlideBar.
         
+        :param size: widget size. Can be a callable or a 2-tuple.
+        :param pos: widget position. Can be a callable or a 2-tuple.
+        :param anchor: widget anchor
+        :param show_val: if False, doesn't display the value on the cursor
         :param func: Callback function when a value is changed
-        :param rect: The SlideBar rectangle where it will be drawn
         :param min_: The eminimum value of the picker
         :param max_: The maximum value of the picker
         :param step: The step
         :param color: color of the cursor
         :param bg_color: color of the background
-        :param interval: minimum interval to call *func*
+        :param interval: minimum milisec elapsed between two calls to *func*
         :param autostart: starts looking directly if it receives inputs
         """
-        super().__init__(rect)
+
+        super().__init__(pos, size, anchor)
 
         self.color = color
         self.bg_color = bg_color
         self.func = func
-        self.value = 0
+        self.value = min_
         self.min = min_
         self.max = max_
         self.step = step
+        self.show_val = show_val
+        self.text_val = SimpleText(self.get, self.center)
 
         self.interval = interval
 
@@ -168,6 +180,16 @@ class SlideBar(BaseWidget):
 
     def __repr__(self):
         return f'SlideBar({self.min}:{self.max}:{self.step}; {super().__repr__(self)}, Value: {self.value})'
+
+    def get(self):
+        """ The current value of the bar """
+        return self.value
+
+    def set(self, value):
+        """ Set the value of the bar. If the value is out of bound, sets it to an extremum """
+        value = min(self.max, max(self.min, value))
+        self.value = value
+        start_new_thread(self.func, (self.value,))
 
     def _start(self):
         """ Starts checking forever if the button is clicked """
@@ -203,31 +225,33 @@ class SlideBar(BaseWidget):
 
     def render(self, display):
         """ Renders the bar on the display """
-        
+
         # the bar
         bar_rect = pygame.Rect(0, 0, self.width, self.height // 3)
         bar_rect.center = self.center
         display.fill(self.bg_color, bar_rect)
 
         # the cursor
-        circle(display, self.value_px, self.centery, self.height // 2, self.color)
+        circle(display, (self.value_px, self.centery), self.height // 2, self.color)
 
 
 __all__ = ["Button", "IconButton", "SlideBar"]
 
-
 if __name__ == '__main__':
     display = pygame.display.set_mode((300, 200))
 
-    sb = SlideBar(print, (0, 0, 200, 30), -5, 5, 0.1, interval=200)
-    sb.center = (150, 100)
+    sb = SlideBar(print, (150, 100), (200, 30), 0, 160, 1, interval=4)
 
-    def func():
+    def func_b():
         sb.color = RED
+    red = Button(func_b, (300, 200), (60, 40), 'RED', anchor=BOTTOMRIGHT)
 
-    red = Button(func, (0, 0, 40, 40), 'RED')
-    red.bottomright = (300, 200)
-
+    def func_sb(value):
+        red.topright = 300, value
+        
+    sb.func=func_sb
+    sb.set(0)
+    
     run = True
     while run:
         mouse = pygame.mouse.get_pos()

@@ -3,9 +3,9 @@
 import pygame
 
 try:
-    from locals import CENTER
+    from locals import *
 except ImportError:
-    from .locals import CENTER
+    from .locals import *
 
 
 class BaseWidget(pygame.Rect):
@@ -23,8 +23,11 @@ class BaseWidget(pygame.Rect):
         self._size = size
         self._focus = False
 
+    def __str__(self):
+        return repr(self)
+
     def __repr__(self):
-        return f'<BaseWidget({self.anchor}:{self.pos}, {self.size})>'
+        return f'<BaseWidget({self.topleft}, {self.size})>'
 
     def __contains__(self, item):
         """ Test if a point is in the widget """
@@ -36,30 +39,33 @@ class BaseWidget(pygame.Rect):
 
         # positions
         if item in "x y top left bottom right topleft bottomleft topright bottomright midtop midleft midbottom midright center".split():
-            super(BaseWidget, self).__setattr__(self.anchor, self.pos)  # update 
-
+            self._update()
+            
         # size
         if item in "width height w h".split():
-            w, h = self.size
-            super(BaseWidget, self).__setattr__("width", w)  # update
-            super(BaseWidget, self).__setattr__("height", h)  # update
+            self._update()
 
         return super(BaseWidget, self).__getattribute__(item)
 
     def __setattr__(self, key, value):
         if key in "topleft bottomleft topright bottomright midtop midleft midbottom midright center".split():
-            print('SET', key, value)
             self.anchor = key
             self._pos = value
 
         elif key in "width height w h".split():
-            raise NotImplemented
+            raise AttributeError
 
         elif key in "x y top left bottom right".split():
-            raise NotImplementedError
+            raise AttributeError
 
         else:
             super(BaseWidget, self).__setattr__(key, value)
+
+    def _update(self):
+        w, h = self.size
+        super(BaseWidget, self).__setattr__("width", w)  # update
+        super(BaseWidget, self).__setattr__("height", h)  # update
+        super(BaseWidget, self).__setattr__(self.anchor, self.pos)  # update 
 
     @property
     def pos(self):
@@ -92,7 +98,6 @@ class BaseWidget(pygame.Rect):
 
 __all__ = ['BaseWidget']
 
-
 if __name__ == '__main__':
     from time import time
 
@@ -106,3 +111,7 @@ if __name__ == '__main__':
     assert size_f()[0] == w.width
     assert (0, 0) in w
     assert (60, 60) not in w
+
+    w = BaseWidget((1, 1), (10, 10), TOPLEFT)
+    assert w.center == (6, 6)
+    assert w.height == 10
