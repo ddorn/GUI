@@ -17,7 +17,7 @@ pygame.font.init()
 
 class SimpleText(BaseWidget):
     """ A simple brut text to draw on the screen """
-    
+
     def __init__(self, text, pos, color=BLUE, font=DEFAULT, anchor='center'):
         """
         Creates a new SimpleText object.
@@ -26,10 +26,10 @@ class SimpleText(BaseWidget):
         :param pos: the position of the text
         :param color: the color of the text
         :param font: a pygame.Font object
-        :param anchor: the anchor of the text. 
+        :param anchor: the anchor of the text.
             See http://www.pygame.org/docs/ref/rect.html#pygame.Rect for a list of possible anchors.
         """
-        
+
         super().__init__(pos, (0, 0), anchor)
 
         self.font = font
@@ -46,7 +46,7 @@ class SimpleText(BaseWidget):
     @property
     def text(self):
         """ Returns the string to render """
-        
+
         if callable(self._text):
             return str(self._text())
         return str(self._text)
@@ -66,15 +66,15 @@ class SimpleText(BaseWidget):
     @color.setter
     def color(self, value):
         """ Sets the color to a new value (tuple). Renders the text if needed. """
-        
+
         if value != self.color:
             self._color = value
             self._render()
 
     def _render(self):
-        """ Render the text. 
+        """ Render the text.
             Avoid using this fonction too many time as it is slow as it is low to render text and blit it. """
-        
+
         self._last_text = self.text
 
         self._surface = self.font.render(self.text, True, self.color)
