@@ -81,11 +81,11 @@ class Button(BaseButton):
             color = self.color_pressed
         else:
             color = self.color
-        
+
         pygame.draw.rect(display, color, self)
 
         text_color = bw_contrasted(color)
-        
+
         text_surf = DEFAULT.render(self.text, True, text_color, color)
         text_rect = text_surf.get_rect()
         text_rect.center = self.center
@@ -145,7 +145,7 @@ class SlideBar(BaseWidget):
     """
 
     def __init__(self, func, pos, size, min_=0., max_=100., step=1., color=BLUE, *, bg_color=LIGHT_GREY, show_val=True,
-                 interval=1, anchor=CENTER, inital=None):
+                 interval=1, anchor=CENTER, inital=None, rounding=2, v_type=float):
         """
         Creates a SlideBar.
         
@@ -160,6 +160,10 @@ class SlideBar(BaseWidget):
         :param color: color of the cursor
         :param bg_color: color of the background
         :param interval: minimum milisec elapsed between two calls to *func*
+        :param inital: initial value for the SB
+        :param rounding: number of digits to round values
+        :param v_type: type of value. Can be float/int/Decimal/Fraction etc.
+            you will have an object of this type using get()
         """
 
         super().__init__(pos, size, anchor)
@@ -167,57 +171,58 @@ class SlideBar(BaseWidget):
         self.color = color
         self.bg_color = bg_color
         self.func = func
-        self.value = inital if inital is not None else min_
+        self._value = inital if inital is not None else min_
         self.min = min_
         self.max = max_
         self.step = step
         self.show_val = show_val
-        
+        self.rounding = rounding
+        self.v_type = v_type
+
         font = Font(self.height // 2)
         self.text_val = SimpleText(self.get, lambda: (self.value_px, self.centery), bw_contrasted(self.color), font)
 
         self.interval = interval
 
     def __repr__(self):
-        return f'SlideBar({self.min}:{self.max}:{self.step}; {super().__repr__()}, Value: {self.value})'
+        return f'SlideBar({self.min}:{self.max}:{self.step}; {super().__repr__()}, Value: {self.get()})'
 
     def get(self):
         """ The current value of the bar """
-        return self.value
+        return round(self.v_type(self._value), self.rounding)
 
     def set(self, value):
         """ Set the value of the bar. If the value is out of bound, sets it to an extremum """
         value = min(self.max, max(self.min, value))
-        self.value = value
-        start_new_thread(self.func, (self.value,))
+        self._value = value
+        start_new_thread(self.func, (self.get(),))
 
     def _start(self):
         """ Starts checking if the SB is shifted """
-        
+
         last_call = 42
         while self._focus:
-            sleep(1/100)
+            sleep(1 / 100)
 
-            
             mouse = pygame.mouse.get_pos()
             if self.left <= mouse[0] <= self.right:
                 self.value_px = mouse[0]
 
                 if last_call + self.interval / 1000 < time():
                     last_call = time()
-                    self.func(self.value)
+                    self.func(self.get())
 
     def focus(self):
         """ Gives the focus to the widget """
         self._focus = True
-        
+
         start_new_thread(SlideBar._start, (self,))
-        
+
     @property
     def value_px(self):
         """ The position in pixels of the cursor """
         step = self.w / (self.max - self.min)
-        return self.x + step * (self.value - self.min)  # -self.min so self.x is the minimum possible place
+        return self.x + step * (self.get() - self.min)  # -self.min so self.x is the minimum possible place
 
     @value_px.setter
     def value_px(self, value):
@@ -226,7 +231,7 @@ class SlideBar(BaseWidget):
         delta_x = value - self.x
         prop = delta_x / self.width
         real = prop * (self.max - self.min)
-        self.value = self.min + round(real / self.step) * self.step
+        self._value = self.min + round(real / self.step) * self.step
 
     def render(self, display):
         """ Renders the bar on the display """
@@ -238,29 +243,34 @@ class SlideBar(BaseWidget):
 
         # the cursor
         circle(display, (self.value_px, self.centery), self.height // 2, self.color)
-        
+
         # the value
         if self.show_val:
             self.text_val.render(display)
 
-__all__ = ["Button", "IconButton", "SlideBar"]
 
+__all__ = ["Button", "IconButton", "SlideBar"]
 
 if __name__ == '__main__':
     display = pygame.display.set_mode((300, 200))
 
     sb = SlideBar(print, (150, 100), (200, 30), 0, 160, 1, interval=4)
 
+
     def func_b():
         sb.color = RED
+
+
     red = Button(func_b, (300, 200), (60, 40), 'RED', anchor=BOTTOMRIGHT)
+
 
     def func_sb(value):
         red.topright = 300, value
-        
-    sb.func=func_sb
+
+
+    sb.func = func_sb
     sb.set(0)
-    
+
     run = True
     while run:
         mouse = pygame.mouse.get_pos()
