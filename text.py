@@ -1,8 +1,9 @@
 """
 A module to easily render text on the screen.
 """
-
+import os
 import pygame
+from sympy import preview
 
 try:
     from .font import *
@@ -57,7 +58,6 @@ class SimpleText(BaseWidget):
 
         if value != self._text:
             self._text = value
-            self._render()
 
     @property
     def color(self):
@@ -92,4 +92,96 @@ class SimpleText(BaseWidget):
         display.blit(self._surface, (self.topleft, self.size))
 
 
-__all__ = ['SimpleText']
+class LaText(SimpleText):
+    """ This class provides a nice rendering for maths equations based on latex. """
+
+    def __init__(self, text, pos, color=BLUE, font=DEFAULT, anchor='center'):
+        """
+        The latex _interface_ provides a well looking display of math exquations.
+        
+        However, you can NOT use function that are not in the amsmath/amsfont or standard package.
+        
+        :param text: The string or a callable (no args) that returns the string to dislay. The string must be a valid
+            LaTex text, without the headers (only the document environement.
+        :param pos: the position of the text
+        :param color: the color of the text
+        :param font: a pygame.Font object. Its size will be chosent for the LeTeX size.
+            Too big sizes (> ~30) does not work
+        :param anchor: the anchor of the text.
+            See http://www.pygame.org/docs/ref/rect.html#pygame.Rect for a list of possible anchors.
+        """
+
+        super().__init__(text, pos, color, font, anchor)
+
+    def _render(self):
+        self._last_text = self.text
+
+        name = GUI_PATH + '/.temp/matheq' + str(id(self)) + '.png'
+
+        # generates the LaTeX text
+        preamble = r"""\documentclass[40pt]{article}\pagestyle{empty}""" + \
+                   r"\usepackage{color}" + \
+                   r"\usepackage{amsmath}" + \
+                   r"\usepackage{amsfonts}" + \
+                   r"\definecolor{kkolor}{RGB}{%i, %i, %i}" % self.color + \
+                   r"\begin{document}"
+
+        font_setter = r"\fontsize{%i pt}{%i pt}\selectfont" % (self.font.font_size, self.font.font_size * 1.2)
+        color_setter = r"{\color{kkolor}"
+        end_color_setter = '}'
+        text = font_setter + color_setter + self.text + end_color_setter
+
+        # generates the LaTeX png
+        preview(text, euler=False, viewer='file', filename=name, preamble=preamble)
+
+        # load it
+        self._surface = pygame.image.load(name)
+        rect = self._surface.get_rect()
+
+        self.size = rect.size
+
+        try:
+            os.remove(name)
+        except FileNotFoundError:
+            pass
+
+
+__all__ = ['SimpleText', 'LaText']
+
+if __name__ == '__main__':
+    screen = pygame.display.set_mode((400, 200))
+
+    normal_text = SimpleText("42, c'est moi !", (270, 20), GREEN, anchor=MIDTOP)
+    math_text = LaText(r'$$\sqrt{2}^{7x+3}\times\sum_{k=0}^{\infty} 3A_kf(ke^{i\pi})= 0$$', (200, 100))
+    matrix = LaText(r"""
+\[
+M=
+  \begin{bmatrix}
+    1 & 2 & 3 & 4 & 5 \\
+    3 & 4 & 5 & 6 & 7
+  \end{bmatrix}
+\]
+""", (300, 150), color=RED, font=Font(10))
+    pi = LaText('$$\pi$$', (84, 42), LIGHT_GREY, font=Font(100))  # Too big fonts doesn't works, max is around 30
+
+    i = 0
+    run = True
+    while run:
+        for e in pygame.event.get():
+            if e.type == pygame.QUIT:
+                run = False
+                
+            if e.type == pygame.MOUSEBUTTONDOWN:
+                if e.button == 4:
+                    i = max(1 - 1, 1)
+                if e.button == 5:
+                    i += 1
+                pi.font.font_size = i
+                pi.text = i
+                
+        screen.fill(WHITE)
+        math_text.render(screen)
+        matrix.render(screen)
+        pi.render(screen)
+        normal_text.render(screen)
+        pygame.display.flip()

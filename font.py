@@ -18,6 +18,8 @@ class Font(font.Font):
         :param file: The file of the font file
         """
         super(Font, self).__init__(file, size)
+        self.font_size = size
+        self.font_name = file
 
 
 DEFAULT = Font(20)
