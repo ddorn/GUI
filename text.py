@@ -3,7 +3,6 @@ A module to easily render text on the screen.
 """
 import os
 import pygame
-from sympy import preview
 
 try:
     from .font import *
@@ -106,14 +105,26 @@ class LaText(SimpleText):
         :param pos: the position of the text
         :param color: the color of the text
         :param font: a pygame.Font object. Its size will be chosent for the LeTeX size.
-            Too big sizes (> ~30) does not work
+            Too big sizes (> 24.88) does not work
         :param anchor: the anchor of the text.
             See http://www.pygame.org/docs/ref/rect.html#pygame.Rect for a list of possible anchors.
         """
 
         super().__init__(text, pos, color, font, anchor)
 
+    @staticmethod
+    def latex_to_png(tex):
+
+        folder = GUI_PATH + r'\.temp'
+        print(folder)
+        with open(folder + r'\tex.tex', 'w') as f:
+            f.write(tex)
+        os.system('latex2png ' + folder)
+
+        return pygame.image.load(folder + r'\tex.png')
+
     def _render(self):
+
         self._last_text = self.text
 
         name = GUI_PATH + '/.temp/matheq' + str(id(self)) + '.png'
@@ -129,13 +140,13 @@ class LaText(SimpleText):
         font_setter = r"\fontsize{%i pt}{%i pt}\selectfont" % (self.font.font_size, self.font.font_size * 1.2)
         color_setter = r"{\color{kkolor}"
         end_color_setter = '}'
-        text = font_setter + color_setter + self.text + end_color_setter
+        end = r'\end{document}'
+        text = preamble + font_setter + color_setter + self.text + end_color_setter + end
 
         # generates the LaTeX png
-        preview(text, euler=False, viewer='file', filename=name, preamble=preamble)
+        self._surface = self.latex_to_png(text)
 
         # load it
-        self._surface = pygame.image.load(name)
         rect = self._surface.get_rect()
 
         self.size = rect.size
@@ -162,7 +173,7 @@ M=
   \end{bmatrix}
 \]
 """, (300, 150), color=RED, font=Font(10))
-    pi = LaText('$$\pi$$', (84, 42), LIGHT_GREY, font=Font(100))  # Too big fonts doesn't works, max is around 30
+    pi = LaText('$$\pi$$', (84, 42), LIGHT_GREY, font=Font(100))  # Too big fonts doesn't works, max is 24
 
     i = 0
     run = True
@@ -170,7 +181,7 @@ M=
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
                 run = False
-                
+
             if e.type == pygame.MOUSEBUTTONDOWN:
                 if e.button == 4:
                     i = max(1 - 1, 1)
@@ -178,8 +189,8 @@ M=
                     i += 1
                 pi.font.font_size = i
                 pi.text = i
-                
-        screen.fill(WHITE)
+
+        screen.fill((250, 250, 250))
         math_text.render(screen)
         matrix.render(screen)
         pi.render(screen)
