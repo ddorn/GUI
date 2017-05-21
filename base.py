@@ -96,7 +96,7 @@ class BaseWidget(pygame.Rect):
     def anchor(self):
         if callable(self._anchor):
             return self._anchor()
-        return self.anchor
+        return self._anchor
 
     @anchor.setter
     def anchor(self, value):
