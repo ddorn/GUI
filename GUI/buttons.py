@@ -18,8 +18,8 @@ except ImportError:
     from GUI.base import BaseWidget
     from GUI.colors import bw_contrasted
     from GUI.locals import *
-    from font import *
-    from draw import *
+    from GUI.font import *
+    from GUI.draw import *
 
 
 class BaseButton(BaseWidget):
@@ -191,7 +191,7 @@ class SlideBar(BaseWidget):
 
     def get(self):
         """ The current value of the bar """
-        return self.v_type(round(self._value, self.rounding))
+        return round(self.v_type(self._value), self.rounding)
 
     def set(self, value):
         """ Set the value of the bar. If the value is out of bound, sets it to an extremum """

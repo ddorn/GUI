@@ -10,7 +10,7 @@ try:
     from .locals import *
     from .base import BaseWidget
 except ImportError:
-    from font import *
+    from GUI.font import *
     from GUI.locals import *
     from GUI.base import BaseWidget
 pygame.font.init()

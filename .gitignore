@@ -1,5 +1,6 @@
 .idea
 .gitattributes
+auto_update.cmd
 .temp/*
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -139,3 +140,4 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+auto_update.cmd
