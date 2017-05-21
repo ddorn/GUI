@@ -6,7 +6,7 @@ import pygame
 from pygame import gfxdraw
 
 try:
-    from locals import BLACK
+    from GUI.locals import BLACK
 except ImportError:
     from .locals import BLACK
 

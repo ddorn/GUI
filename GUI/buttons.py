@@ -15,9 +15,9 @@ try:
     from .draw import *
     from .colors import bw_contrasted
 except ImportError:
-    from base import BaseWidget
-    from colors import bw_contrasted
-    from locals import *
+    from GUI.base import BaseWidget
+    from GUI.colors import bw_contrasted
+    from GUI.locals import *
     from font import *
     from draw import *
 

@@ -1,7 +1,7 @@
 try:
     from .locals import *
 except ImportError:
-    from locals import *
+    from GUI.locals import *
     
     
 def bw_contrasted(color, threshold=200):

@@ -5,7 +5,7 @@ import pygame
 try:
     from .locals import *
 except ImportError:
-    from locals import *
+    from GUI.locals import *
 
 
 class BaseWidget(pygame.Rect):

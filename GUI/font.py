@@ -3,7 +3,7 @@ from pygame import font
 try:
     from .locals import *
 except ImportError:
-    from locals import *
+    from GUI.locals import *
 font.init()
 
 
