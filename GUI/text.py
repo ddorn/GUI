@@ -3,6 +3,7 @@ A module to easily render text on the screen.
 """
 import os
 import pygame
+import tempfile
 
 try:
     from .font import *
@@ -113,15 +114,16 @@ class LaText(SimpleText):
         super().__init__(text, pos, color, font, anchor)
 
     @staticmethod
-    def latex_to_png(tex):
+    def latex_to_img(tex):
+        with tempfile.TemporaryDirectory() as tmpdirname:
+            
+            with open(tmpdirname + r'\tex.tex', 'w') as f:
+                f.write(tex)
+            os.system('latex2png ' + tmpdirname)
 
-        folder = GUI_PATH + r'\.temp'
-        print(folder)
-        with open(folder + r'\tex.tex', 'w') as f:
-            f.write(tex)
-        os.system('latex2png ' + folder)
-
-        return pygame.image.load(folder + r'\tex.png')
+            image = pygame.image.load(tmpdirname + r'\tex.png')
+        
+        return image
 
     def _render(self):
 
@@ -144,7 +146,7 @@ class LaText(SimpleText):
         text = preamble + font_setter + color_setter + self.text + end_color_setter + end
 
         # generates the LaTeX png
-        self._surface = self.latex_to_png(text)
+        self._surface = self.latex_to_img(text)
 
         # load it
         rect = self._surface.get_rect()
@@ -185,7 +187,7 @@ M=
 
             if e.type == pygame.MOUSEBUTTONDOWN:
                 if e.button == 4:
-                    pi_size = max(1 - 1, 1)
+                    pi_size = max(pi_size - 1, 1)
                 if e.button == 5:
                     pi_size += 1
                 pi.font.font_size = pi_size

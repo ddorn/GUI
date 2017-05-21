@@ -8,7 +8,7 @@
 
 *(optionnal)*
 * **latex :** you must avec latex install if you want to use the `LaText` widget 
-            (`latex` and `dvi2png` accessible in path)
+            (`latex` and `dvipng` accessible in path)
 
 ### Installation
  You can clone this repository in your project or just run
