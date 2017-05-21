@@ -13,8 +13,7 @@
 ### Installation
  You can clone this repository in your project or just run
         
-    pip install -U https://github.com/ddorn/GUI/zipball/master
-    
+    pip install git+https://github.com/ddorn/GUI.git@master#egg=GUI    
 
 ### Use
 
