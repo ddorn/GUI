@@ -16,12 +16,14 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     
 setup(
     name='Pygame GUI Lib',
-    version='1.0',
+    version='1.0a',
     description='Ease widgets for pygame',
     long_description=long_description,
     url="https://github.com/ddorn/GUI",
     author='Diego Dorn',
     author_email='diego.dorn@free.fr',
     packages=find_packages(),
-    package_data={}
+    package_data={
+        '': '*'
+    }
 )
