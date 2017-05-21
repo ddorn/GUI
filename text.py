@@ -159,6 +159,7 @@ class LaText(SimpleText):
 
 __all__ = ['SimpleText', 'LaText']
 
+
 if __name__ == '__main__':
     screen = pygame.display.set_mode((400, 200))
 
@@ -173,9 +174,9 @@ M=
   \end{bmatrix}
 \]
 """, (300, 150), color=RED, font=Font(10))
-    pi = LaText('$$\pi$$', (84, 42), LIGHT_GREY, font=Font(100))  # Too big fonts doesn't works, max is 24
+    pi = LaText('$$\pi$$', (84, 42), LIGHT_GREY, font=Font(24))  # Too big fonts doesn't works, max is 24
 
-    i = 0
+    pi_size = 24
     run = True
     while run:
         for e in pygame.event.get():
@@ -184,11 +185,11 @@ M=
 
             if e.type == pygame.MOUSEBUTTONDOWN:
                 if e.button == 4:
-                    i = max(1 - 1, 1)
+                    pi_size = max(1 - 1, 1)
                 if e.button == 5:
-                    i += 1
-                pi.font.font_size = i
-                pi.text = i
+                    pi_size += 1
+                pi.font.font_size = pi_size
+                pi.text = pi_size
 
         screen.fill((250, 250, 250))
         math_text.render(screen)

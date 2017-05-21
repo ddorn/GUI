@@ -144,10 +144,12 @@ class SlideBar(BaseWidget):
     Don't forget to call focus() and unfocus() when the user click on the SlideBar
     """
 
-    def __init__(self, func, pos, size, min_=0., max_=100., step=1., color=BLUE, *, bg_color=LIGHT_GREY, show_val=True,
-                 interval=1, anchor=CENTER, inital=None, rounding=2, v_type=float):
+    def __init__(self, func, pos, size, min_=0, max_=100, step=1, color=BLUE, *, bg_color=LIGHT_GREY, show_val=True,
+                 interval=1, anchor=CENTER, inital=None, rounding=2, v_type=int):
         """
         Creates a SlideBar.
+        
+        Use focus() when the user selects the bar and unfous() when he release the SB.
         
         :param size: widget size. Can be a callable or a 2-tuple.
         :param pos: widget position. Can be a callable or a 2-tuple.
@@ -189,7 +191,7 @@ class SlideBar(BaseWidget):
 
     def get(self):
         """ The current value of the bar """
-        return round(self.v_type(self._value), self.rounding)
+        return self.v_type(round(self._value, self.rounding))
 
     def set(self, value):
         """ Set the value of the bar. If the value is out of bound, sets it to an extremum """
@@ -205,12 +207,16 @@ class SlideBar(BaseWidget):
             sleep(1 / 100)
 
             mouse = pygame.mouse.get_pos()
-            if self.left <= mouse[0] <= self.right:
-                self.value_px = mouse[0]
+            last_value = self.get()
+            self.value_px = mouse[0]
 
-                if last_call + self.interval / 1000 < time():
-                    last_call = time()
-                    self.func(self.get())
+            # we do not need to do anything when it the same value
+            if self.get() == last_value:
+                continue
+
+            if last_call + self.interval / 1000 < time():
+                last_call = time()
+                self.func(self.get())
 
     def focus(self):
         """ Gives the focus to the widget """
@@ -226,7 +232,7 @@ class SlideBar(BaseWidget):
 
     @value_px.setter
     def value_px(self, value):
-        assert self.x <= value <= self.x + self.width
+        value = min(self.right, max(self.left, value))
 
         delta_x = value - self.x
         prop = delta_x / self.width

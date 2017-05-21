@@ -7,6 +7,7 @@ try:
 except ImportError:
     from locals import *
 
+
 class BaseWidget(pygame.Rect):
     """ The base class for any widget """
 
@@ -17,7 +18,7 @@ class BaseWidget(pygame.Rect):
         """
         super().__init__((0, 0), (0, 0))
 
-        self.anchor = anchor
+        self._anchor = anchor
         self._pos = pos
         self._size = size
         self._focus = False
@@ -39,7 +40,7 @@ class BaseWidget(pygame.Rect):
         # positions
         if item in "x y top left bottom right topleft bottomleft topright bottomright midtop midleft midbottom midright center".split():
             self._update()
-            
+
         # size
         if item in "width height w h".split():
             self._update()
@@ -61,10 +62,15 @@ class BaseWidget(pygame.Rect):
             super(BaseWidget, self).__setattr__(key, value)
 
     def _update(self):
+        """ 
+        This is called each time an attribute is asked, to be sure every params are updated, beceause of callbacks
+        """
+
+        # I can not set the size attr because it is my property, so I set the width and height separately
         w, h = self.size
-        super(BaseWidget, self).__setattr__("width", w)  # update
-        super(BaseWidget, self).__setattr__("height", h)  # update
-        super(BaseWidget, self).__setattr__(self.anchor, self.pos)  # update 
+        super(BaseWidget, self).__setattr__("width", w)
+        super(BaseWidget, self).__setattr__("height", h)
+        super(BaseWidget, self).__setattr__(self.anchor, self.pos)
 
     @property
     def pos(self):
@@ -85,6 +91,16 @@ class BaseWidget(pygame.Rect):
     @size.setter
     def size(self, value):
         self._size = value
+
+    @property
+    def anchor(self):
+        if callable(self._anchor):
+            return self._anchor()
+        return self.anchor
+
+    @anchor.setter
+    def anchor(self, value):
+        self._anchor = value
 
     def focus(self):
         """ Gives the focus to the widget """
