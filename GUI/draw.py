@@ -25,7 +25,7 @@ def line(surf, start, end, color=BLACK, width=1, style=FLAT):
     end = V2(*end)
 
     ab = end - start
-    u = ab.normnorm * width / 2
+    u = ab.normnorm() * width / 2
 
     p = start + u
     q = start - u
