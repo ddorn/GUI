@@ -18,7 +18,8 @@ except ImportError:
 def line(surf, start, end, color=BLACK, width=1, style=FLAT):
     """ Draws an antialiased on the surface. """
 
-    if not width:
+    width = round(width, 1)
+    if width == 1:
         return pygame.draw.aaline(surf, color, start, end)
 
     start = V2(*start)
@@ -69,8 +70,8 @@ def circle(surf, xy, r, color=BLACK):
 def polygon(surf, points, color):
     """ Draw an antialiased filled polygon on a surfae """
 
-    gfxdraw.filled_polygon(surf, points, color)
     gfxdraw.aapolygon(surf, points, color)
+    gfxdraw.filled_polygon(surf, points, color)
 
     x = min([x for (x, y) in points])
     y = min([y for (x, y) in points])

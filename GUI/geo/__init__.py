@@ -2,4 +2,6 @@
 A module for gometry, goegebra is the past !
 """
 
-raise NotImplementedError("J'ai rien fait encore :P")
+from GUI.geo.bezier import *
+from GUI.geo.basics import *
+

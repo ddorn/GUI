@@ -19,7 +19,7 @@ pygame.font.init()
 class SimpleText(BaseWidget):
     """ A simple brut text to draw on the screen """
 
-    def __init__(self, text, pos, color=BLUE, font=DEFAULT, anchor='center'):
+    def __init__(self, text, pos, color=BLUE, bg_color=None, font=DEFAULT, anchor='center'):
         """
         Creates a new SimpleText object.
         
@@ -35,6 +35,7 @@ class SimpleText(BaseWidget):
 
         self.font = font
         self._color = color
+        self._bg_color = bg_color
         self._last_text = ...
         self._text = text
         self._surface = pygame.Surface((1, 1))  # placeholder
@@ -63,6 +64,10 @@ class SimpleText(BaseWidget):
     def color(self):
         return self._color
 
+    @property
+    def bg_color(self):
+        return self._bg_color
+
     @color.setter
     def color(self, value):
         """ Sets the color to a new value (tuple). Renders the text if needed. """
@@ -71,13 +76,21 @@ class SimpleText(BaseWidget):
             self._color = value
             self._render()
 
+    @bg_color.setter
+    def bg_color(self, value):
+        """ Sets the color to a new value (tuple). Renders the text if needed. """
+
+        if value != self.bg_color:
+            self._bg_color = value
+            self._render()
+
     def _render(self):
         """ Render the text.
             Avoid using this fonction too many time as it is slow as it is low to render text and blit it. """
 
         self._last_text = self.text
 
-        self._surface = self.font.render(self.text, True, self.color)
+        self._surface = self.font.render(self.text, True, self.color, self.bg_color)
         rect = self._surface.get_rect()
 
         self.size = rect.size
