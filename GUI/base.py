@@ -13,8 +13,7 @@ class BaseWidget(pygame.Rect):
 
     def __init__(self, pos, size, anchor=CENTER):
         """
-        Creates a 
-        :param rect: A pygame Rect-like object (can be a tuple of 4 values.
+        Creates a Basic Widget with... nothing
         """
         super().__init__((0, 0), (0, 0))
 
@@ -27,7 +26,7 @@ class BaseWidget(pygame.Rect):
         return repr(self)
 
     def __repr__(self):
-        return f'<BaseWidget({self.topleft}, {self.size})>'
+        return '<BaseWidget({}, {})>'.format(self.topleft, self.size)
 
     def __contains__(self, item):
         """ Test if a point is in the widget """
