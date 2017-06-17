@@ -187,7 +187,8 @@ class SlideBar(BaseWidget):
         self.interval = interval
 
     def __repr__(self):
-        return f'SlideBar({self.min}:{self.max}:{self.step}; {super().__repr__()}, Value: {self.get()})'
+        # return f'SlideBar({self.min}:{self.max}:{self.step}; {super().__repr__()}, Value: {self.get()})'
+        return 'SlideBar({}:{}:{}; {}, Value: {})'.format(self.min, self.max, self.step, super().__repr__(), self.get())
 
     def get(self):
         """ The current value of the bar """
