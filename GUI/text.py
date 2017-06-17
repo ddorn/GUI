@@ -7,6 +7,7 @@ import os
 import pygame
 from pygame.locals import *
 import tempfile
+from random import randint
 
 from pygame.event import EventType
 
@@ -267,6 +268,92 @@ class InLineTextBox(SimpleText):
             groom = self.cursor_pos()
             line(display, (groom, self.top), (groom, self.bottom), CONCRETE)
 
+
+class InLinePassBox(InLineTextBox):
+    """ TextBow that doesn't show the text but other thing or some dots """
+
+    STRANGE = 42
+    DOTS = 69
+
+    def __init__(self, pos, size, color=BLUE, bg_color=None, font=DEFAULT, anchor='center', style=STRANGE):
+        """
+        TextBow that doesn't show the text but other thing or some dots
+        See also InLineTextBox.
+
+        :param style: STRANGE (default) or DOTS
+        """
+
+        self._shawn_text = ''
+        self.style = style
+
+        super().__init__(pos, size, color, bg_color, font, anchor)
+
+    @property
+    def shawn_text(self):
+        """ The text displayed instead of the real one """
+
+        if len(self._shawn_text) == len(self):
+            return self._shawn_text
+
+        if self.style == self.DOTS:
+            return chr(0x2022) * len(self)
+
+        ranges = [
+            (902, 1366),
+            (192, 683),
+            (33, 122)
+        ]
+
+        s = ''
+        while len(s) < len(self.text):
+            apolo = randint(33, 1366)
+            for a, b in ranges:
+                if a <= apolo <= b:
+                    s += chr(apolo)
+                    break
+
+        self._shawn_text = s
+        return s
+
+    def cursor_pos(self):
+        """ The cursor position in pixels """
+
+        papy = self._surface.get_width()
+        if papy > self.w:
+            shift = papy - self.width
+        else:
+            shift = 0
+
+        return self.left + self.font.size(self.shawn_text[:self.cursor])[0] - shift
+
+    def _render(self):
+        """ Render the text.
+            Avoid using this fonction too many times as it is slow as it is slow to render text and blit it. """
+
+        self._last_text = self.shawn_text
+
+        self._surface = self.font.render(self.shawn_text, True, self.color, self.bg_color)
+        size = self.w, self._surface.get_height()
+        self.size = size
+
+    def render(self, display):
+        """ Render basicly the text """
+
+        # to handle changing objects / callable
+        if self.shawn_text != self._last_text:
+            self._render()
+
+        papy = self._surface.get_width()
+        if papy <= self.width:
+            display.blit(self._surface, (self.topleft, self.size))
+        else:
+            display.blit(self._surface, (self.topleft, self.size), ((papy - self.w, 0), self.size))
+
+        if self.cursor_visible:
+            groom = self.cursor_pos()
+            line(display, (groom, self.top), (groom, self.bottom), CONCRETE)
+
+
 class LaText(SimpleText):
     """ This class provides a nice rendering for maths equations based on latex. """
 
@@ -335,7 +422,7 @@ class LaText(SimpleText):
             pass
 
 
-__all__ = ['SimpleText', 'LaText', 'InLineTextBox']
+__all__ = ['SimpleText', 'LaText', 'InLineTextBox', 'InLinePassBox']
 
 
 if __name__ == '__main__':
