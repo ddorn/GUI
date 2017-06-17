@@ -5,6 +5,7 @@ This is a module for easy drawings.
 """
 
 import pygame
+from math import sin, cos, asin, acos
 from pygame import gfxdraw
 
 try:
@@ -67,6 +68,60 @@ def circle(surf, xy, r, color=BLACK):
     return pygame.Rect(x - r, y - r, 2 * r, 2 * r)
 
 
+def ring(surf, xy, r, width, color):
+    """ Draws a ring """
+
+    r2 = r - width
+
+    x0, y0 = xy
+    x = r2
+    y = 0
+    err = 0
+
+    # collect points of the inner circle
+    right = {}
+    while x >= y:
+        right[x] = y
+        right[y] = x
+        right[-x] = y
+        right[-y] = x
+
+        y += 1
+        if (err <= 0):
+            err += 2 * y + 1
+        if (err > 0):
+            x -= 1
+            err -= 2 * x + 1
+
+    def line(surf, color, x, y, right):
+        if -r2 <= y <= r2:
+            pygame.draw.line(surf, color, (x0 + right[y], y0 + y), (x0 + x, y0 + y))
+            pygame.draw.line(surf, color, (x0 - right[y], y0 + y), (x0 - x, y0 + y))
+        else:
+            pygame.draw.line(surf, color, (x0 - x, y0 + y), (x0 + x, y0 + y))
+
+    x = r
+    y = 0
+    err = 0
+
+    while x >= y:
+
+        line(surf, color, x, y, right)
+        line(surf, color, x, -y, right)
+        line(surf, color, y, x, right)
+        line(surf, color, y, -x, right)
+
+        y += 1
+        if (err < 0):
+            err += 2 * y + 1
+        if (err >= 0):
+            x -= 1
+            err -= 2 * x + 1
+
+    gfxdraw.aacircle(surf, x0, y0, r, color)
+    gfxdraw.aacircle(surf, x0, y0, r2, color)
+
+
 def polygon(surf, points, color):
     """ Draw an antialiased filled polygon on a surfae """
 
@@ -78,7 +133,7 @@ def polygon(surf, points, color):
     xm = max([x for (x, y) in points])
     ym = max([y for (x, y) in points])
 
-    return pygame.Rect(x, y, xm-x, ym-y)
+    return pygame.Rect(x, y, xm - x, ym - y)
 
 
-__all__ = ['circle', 'line', 'polygon']
+__all__ = ['circle', 'line', 'polygon', 'ring']

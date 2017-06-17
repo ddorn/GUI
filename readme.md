@@ -13,7 +13,7 @@
 ### Installation
  You can clone this repository in your project or just run
         
-    pip install git+https://github.com/ddorn/GUI.git@master#egg=GUI    
+    pip install -U git+https://github.com/ddorn/GUI.git@master#egg=GUI    
 
 ### Use
 

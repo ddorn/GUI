@@ -41,6 +41,9 @@ class V2:
     def __repr__(self):
         return "V2({}, {})".format(self.x, self.y)
 
+    def __eq__(self, other):
+        return self.x == other[0] and self.y == other[1]
+
     def __add__(self, other):
         return V2(self.x + other[0], self.y + other[1])
 

@@ -42,8 +42,7 @@ def gui():
     dragging = None
     render = True
 
-    run = True
-    while run:
+    while True:
 
         # #######
         # Input loop
@@ -52,11 +51,14 @@ def gui():
         mouse = pygame.mouse.get_pos()
         for e in pygame.event.get():
             if e.type == QUIT:
-                run = False
+                return 0
 
             elif e.type == KEYDOWN:
                 if e.key == K_ESCAPE:
-                    run = False
+                    return 0
+
+                if e.key == K_F4 and e.mod & KMOD_ALT:
+                    return 0
 
             elif e.type == MOUSEBUTTONDOWN:
                 if e.button == 1:
