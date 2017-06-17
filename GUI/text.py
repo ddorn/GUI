@@ -138,7 +138,7 @@ class InLineTextBox(SimpleText):
         super().__init__('', pos, color, bg_color, font, anchor)
         self.size = size, 42
         self._cursor = 0
-        self.cursor_visible = False
+        self.cursor_visible = True
 
         self._render()
 
@@ -275,12 +275,12 @@ class InLinePassBox(InLineTextBox):
     STRANGE = 42
     DOTS = 69
 
-    def __init__(self, pos, size, color=BLUE, bg_color=None, font=DEFAULT, anchor='center', style=STRANGE):
+    def __init__(self, pos, size, color=BLUE, bg_color=None, font=DEFAULT, anchor='center', style=DOTS):
         """
         TextBow that doesn't show the text but other thing or some dots
         See also InLineTextBox.
 
-        :param style: STRANGE (default) or DOTS
+        :param style: STRANGE or DOTS
         """
 
         self._shawn_text = ''
