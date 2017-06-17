@@ -1,9 +1,16 @@
+# coding=utf-8
+
 """
 A module to easily render text on the screen.
 """
 import os
 import pygame
+from pygame.locals import *
 import tempfile
+
+from pygame.event import EventType
+
+from GUI.draw import line
 
 try:
     from .font import *
@@ -26,6 +33,7 @@ class SimpleText(BaseWidget):
         :param text: The string or a callable (no args) that returns the string to dislay
         :param pos: the position of the text
         :param color: the color of the text
+        :param bg_color: the background color of the text
         :param font: a pygame.Font object
         :param anchor: the anchor of the text.
             See http://www.pygame.org/docs/ref/rect.html#pygame.Rect for a list of possible anchors.
@@ -44,6 +52,9 @@ class SimpleText(BaseWidget):
 
     def __str__(self):
         return self.text
+
+    def __len__(self):
+        return len(self.text)
 
     @property
     def text(self):
@@ -104,6 +115,157 @@ class SimpleText(BaseWidget):
 
         display.blit(self._surface, (self.topleft, self.size))
 
+
+class InLineTextBox(SimpleText):
+    """ A textbox with scrolling in one line """
+
+    def __init__(self, pos, size, color=BLUE, bg_color=None, font=DEFAULT, anchor='center'):
+        """
+        Creates a new InLineTextBox object.
+
+        Shortcuts with Ctrl for moving the cursor and the deletion are implemented
+
+        :param pos: the position of the text
+        :size: The maximum width the text can take. This is the width of the textbox
+        :param color: the color of the text
+        :param bg_color: the background color of the text
+        :param font: a pygame.Font object
+        :param anchor: the anchor of the text.
+            See http://www.pygame.org/docs/ref/rect.html#pygame.Rect for a list of possible anchors.
+        """
+
+        super().__init__('', pos, color, bg_color, font, anchor)
+        self.size = size, 42
+        self._cursor = 0
+        self.cursor_visible = False
+
+        self._render()
+
+    @property
+    def cursor(self):
+        """ The position of the cursor in the text """
+
+        if self._cursor < 0:
+            self.cursor = 0
+
+        if self._cursor > len(self):
+            self.cursor = len(self)
+
+        return self._cursor
+
+    @cursor.setter
+    def cursor(self, value):
+        if value < 0:
+            self._cursor = 0
+        elif value > len(self):
+            self._cursor = len(self)
+        else:
+            self._cursor = value
+
+    def cursor_on(self):
+        """ The cursor is now visible """
+
+        self.cursor_visible = True
+
+    def cursor_off(self):
+        """ The cursor is now invisible """
+
+        self.cursor_visible = False
+
+    def cursor_pos(self):
+        """ The cursor position in pixels """
+
+        papy = self._surface.get_width()
+        if papy > self.w:
+            shift = papy - self.width
+        else:
+            shift = 0
+
+        return self.left + self.font.size(self.text[:self.cursor])[0] - shift
+
+    def update(self, event_or_list):
+        """ Updates the text and position of cursor according to the event passed """
+
+        if isinstance(event_or_list, EventType):
+            event_or_list = [event_or_list]
+            
+        for e in event_or_list:
+            if e.key == K_RIGHT:
+                if e.mod * KMOD_CTRL:
+                    papy = self.text.find(' ', self.cursor) + 1
+                    if not papy:
+                        papy = len(self)
+                    self.cursor = papy
+                else:
+                    self.cursor += 1
+                    if self.cursor > len(self.text):
+                        self.cursor -= 1
+
+            if e.key == K_LEFT:
+                if e.mod * KMOD_CTRL:
+                    papy = self.text.rfind(' ', 0, self.cursor)
+                    if papy == -1:
+                        papy = 0
+                    self.cursor = papy
+                else:
+                    self.cursor -= 1
+                    if self.cursor < 0:
+                        self.cursor += 1
+
+            if e.key == K_BACKSPACE:
+                if self.cursor == 0:
+                    continue
+
+                if e.mod & KMOD_CTRL:
+                    papy = self.text.rfind(' ', 0, self.cursor)
+                    if papy == -1:
+                        papy = 0
+                    self.text = self.text[:papy] + self.text[self.cursor:]
+                    self.cursor = papy
+                else:
+                    papy = self.cursor
+                    self.text = self.text[:self.cursor - 1] + self.text[self.cursor:]
+                    self.cursor = papy -1
+
+            elif e.key == K_DELETE:
+                if e.mod & KMOD_CTRL:
+                    papy = self.text.find(' ', self.cursor) + 1
+                    if not papy:
+                        papy = len(self.text)
+                    self.text = self.text[:self.cursor] + self.text[papy:]
+                else:
+                    self.text = self.text[:self.cursor] + self.text[self.cursor + 1:]
+
+            elif e.unicode != '':
+                self.text = self.text[:self.cursor] + e.unicode + self.text[self.cursor:]
+                self.cursor += 1
+
+    def _render(self):
+        """ Render the text.
+            Avoid using this fonction too many times as it is slow as it is slow to render text and blit it. """
+
+        self._last_text = self.text
+
+        self._surface = self.font.render(self.text, True, self.color, self.bg_color)
+        size = self.w, self._surface.get_height()
+        self.size = size
+
+    def render(self, display):
+        """ Render basicly the text """
+
+        # to handle changing objects / callable
+        if self.text != self._last_text:
+            self._render()
+
+        papy = self._surface.get_width()
+        if papy <= self.width:
+            display.blit(self._surface, (self.topleft, self.size))
+        else:
+            display.blit(self._surface, (self.topleft, self.size), ((papy - self.w, 0), self.size))
+
+        if self.cursor_visible:
+            groom = self.cursor_pos()
+            line(display, (groom, self.top), (groom, self.bottom), CONCRETE)
 
 class LaText(SimpleText):
     """ This class provides a nice rendering for maths equations based on latex. """
@@ -173,7 +335,7 @@ class LaText(SimpleText):
             pass
 
 
-__all__ = ['SimpleText', 'LaText']
+__all__ = ['SimpleText', 'LaText', 'InLineTextBox']
 
 
 if __name__ == '__main__':
