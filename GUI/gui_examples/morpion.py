@@ -23,7 +23,7 @@ class Morpion(object):
     def __init__(self):
         self.grid = [[0, 0, 0] for _ in range(3)]
         self._hint = None
-        self.turn = randint(1, 2)
+        self.turn = 42 + 27*randint(0, 1)
         self.won = None
 
     def tic(self, x, y):
