@@ -67,10 +67,9 @@ class SimpleText(BaseWidget):
 
     @text.setter
     def text(self, value):
-        """ Sets the text to a new string or callable. Renders the text if needed. """
+        """ Sets the text to a new string or callable. """
 
-        if value != self._text:
-            self._text = value
+        self._text = value
 
     @property
     def color(self):
@@ -430,5 +429,5 @@ __all__ = ['SimpleText', 'LaText', 'InLineTextBox', 'InLinePassBox']
 
 
 if __name__ == '__main__':
-    from gui_examples.text import gui
+    from GUI.gui_examples.text import gui
     gui()
