@@ -58,6 +58,6 @@ class Bezier(BaseWidget):
 
 
 if __name__ == '__main__':
-    from GUI.gui_examples.bezier import gui
+    from gui_examples import gui
 
     gui()

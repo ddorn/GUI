@@ -1,15 +1,20 @@
+# coding=utf-8
+
 """ The very bases of the GUI module """
 
 import pygame
+from pygame.event import EventType
 
-try:
-    from .locals import *
-except ImportError:
-    from GUI.locals import *
+from .locals import *
 
 
 class BaseWidget(pygame.Rect):
-    """ The base class for any widget """
+    """
+    The base class for any widget
+
+    The position of the widget (returned by .pos()) is always the coord at the anchor,
+        even if the anchor changes. Every other position attribute is calculated according to this position
+    """
 
     def __init__(self, pos, size, anchor=CENTER):
         """
@@ -37,7 +42,8 @@ class BaseWidget(pygame.Rect):
     def __getattribute__(self, item):
 
         # positions
-        if item in "x y top left bottom right topleft bottomleft topright bottomright midtop midleft midbottom midright center".split():
+        if item in "x y top left bottom right topleft bottomleft topright bottomright midtop midleft midbottom " \
+                   "midright center centerx centery".split():
             self.__update()
 
         # size
@@ -49,13 +55,13 @@ class BaseWidget(pygame.Rect):
     def __setattr__(self, key, value):
         if key in "topleft bottomleft topright bottomright midtop midleft midbottom midright center".split():
             self.anchor = key
-            self._pos = value
+            self.pos = value
 
         elif key in "width height w h".split():
-            raise AttributeError
+            raise AttributeError("Can't set the attribute")
 
-        elif key in "x y top left bottom right".split():
-            raise AttributeError
+        elif key in "x y top left bottom right centerx centery".split():
+            raise AttributeError("Can't set the attribute")
 
         else:
             super(BaseWidget, self).__setattr__(key, value)
@@ -71,6 +77,11 @@ class BaseWidget(pygame.Rect):
         super(BaseWidget, self).__setattr__("height", h)
         super(BaseWidget, self).__setattr__(self.anchor, self.pos)
 
+    def as_rect(self):
+        """ Returns the pos and the size of the rect like you can pass to the pygame.Rect constructor or any widget"""
+
+        return self.pos, self.size
+
     @property
     def pos(self):
         if callable(self._pos):
@@ -79,6 +90,12 @@ class BaseWidget(pygame.Rect):
 
     @pos.setter
     def pos(self, value):
+        if not callable(value):
+            if not isinstance(value, tuple):
+                raise TypeError("The pos must be a callable that returns 2-tuples or a 2-tuple")
+            if len(value) != 2:
+                raise ValueError("The pos must be a callable that returns 2-tuples or a 2-tuple")
+
         self._pos = value
 
     @property
@@ -89,6 +106,12 @@ class BaseWidget(pygame.Rect):
 
     @size.setter
     def size(self, value):
+        if not callable(value):
+            if not isinstance(value, tuple):
+                raise TypeError("The size must be a callable that returns 2-tuples or a 2-tuple")
+            if len(value) != 2:
+                raise ValueError("The size must be a callable that returns 2-tuples or a 2-tuple")
+
         self._size = value
 
     @property
@@ -99,6 +122,10 @@ class BaseWidget(pygame.Rect):
 
     @anchor.setter
     def anchor(self, value):
+        if not callable(value):
+            if value not in (TOPLEFT, TOPRIGHT, MIDTOP, MIDLEFT, MIDRIGHT, CENTER, BOTTOMRIGHT, MIDBOTTOM, BOTTOMLEFT):
+                raise ValueError
+
         self._anchor = value
 
     def focus(self):
@@ -109,29 +136,21 @@ class BaseWidget(pygame.Rect):
         """ Takes back the focus from the widget """
         self._focus = False
 
+    def get_focus(self):
+        """ Returns the current focus state """
+        return self._focus
+
     def update(self, event_or_list):
-        pass
+        if isinstance(event_or_list, EventType):
+            return [event_or_list]
+        else:
+
+            return event_or_list
 
     def render(self, surf):
-        pass
+        return self.as_rect()
 
 
 __all__ = ['BaseWidget']
 
-if __name__ == '__main__':
-    from time import time
-
-
-    def size_f():
-        return time() // 1 % 60, 60 - time() // 1 % 60
-
-
-    w = BaseWidget((0, 0), size_f)
-
-    assert size_f()[0] == w.width
-    assert (0, 0) in w
-    assert (60, 60) not in w
-
-    w = BaseWidget((1, 1), (10, 10), TOPLEFT)
-    assert w.center == (6, 6)
-    assert w.height == 10
+if __name__ == '__main__': help(BaseWidget)

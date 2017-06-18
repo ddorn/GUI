@@ -5,8 +5,8 @@ A module to easily render text on the screen.
 """
 import os
 import pygame
-from pygame.locals import *
 import tempfile
+from pygame.locals import *
 from random import randint
 
 from pygame.event import EventType
@@ -430,5 +430,5 @@ __all__ = ['SimpleText', 'LaText', 'InLineTextBox', 'InLinePassBox']
 
 
 if __name__ == '__main__':
-    from GUI.gui_examples.text import gui
+    from gui_examples.text import gui
     gui()

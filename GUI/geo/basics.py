@@ -38,3 +38,8 @@ class Point(BaseWidget):
     def dist_to(self, pos):
         pos = V2(*pos)
         return (pos-self.pos).norm()
+
+
+class Rectangle(BaseWidget):
+    def __init__(self, pos, size, color):
+        super().__init__(pos, size)
