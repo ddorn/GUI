@@ -1,11 +1,10 @@
 language: python
 python:
-  - "3.6"
+  - '3.6'
 
 install:
   - pip install pygame
   - pip install pypandoc
-
 script: pytest
 
 deploy:
@@ -15,3 +14,7 @@ deploy:
     secure: YUdgUKRQTgt/AEXfKwn+smVVS+8cW9A8cc1ypOzomwkNKB3gLia6fFdwNEARIygejIA/jnZ8fLZXPBy2zWdJTNIbAVzwT0OvPcrfK4lz/TGD6fZ4gAEwl1P8aw6XBSGR3LMx9SVfZliBgOyRZRyvF+FYkNLpEY1N7Yj3Q11hVCW09rHfVIoYFKNhKWDd1PkAFOgqvMAj3tz6+TCsGC4Hsnp76t/zZ4mLsHtuLPXctFkTjbdn+OJAtFPSAtK0lkOJxAQiNQJ7ko6nlHhLK7t8IjPdLB7BKCunYvgUFUeF/1cdsB8zBEP/DcLCloO91F31FtAGNNYcZsCZvMYLUDefGHccaDuK++U+U4N95DzIKcQ7CQi7YH0paAnRIBsBVcQluuY8a7rRdI2/v+c+OPtz5tu9wa5ZLV1ZDLRhGmEz+Bbqj6M6m1fY1/BWzBrZgm990bIjPEEgyH52VSEza5fAFCzZ3cP7sgZnMwePpaIEw+vwUxcp1qv49R022N+duAruxS67dSWBiJHUerEgSBFBhbYos+WqB/yhYALGHAYqZJ0MGmjDBNpBansG7ysV7E4Arzso22XyVKeH7fQqARxjv+LKJ26OxsvWie0aeKu4uOKYG6YJwb98854B5GfOsvCNY5L8BT2kx0yHw3Ww4maLf42NmbFyQwe7SWJSdSvcHHE=
   on:
     branch: release
+
+notifications:
+  slack:
+    secure: r9rjGrb5ye3LiL7fVwHx3SxHCn4ZSFV3vNzQqiqhQ8vosZ3QTdkKdYl+zk+jJpf0oqwbsBIaHm6AA2bHWDcr7+3R+u0NqHj0rxGrq0w3L4+jBlv5FlOcr+LuikNUvfwiKhqRIO3xNIDxIG+Cc/XF/L+EACFQ+cCS+p8yyi8ScKno/0Kcp19rvuDbxmlJiGfnLHlhPs4RIM5kYRG7SkkR+lmS2PdRM5MqHtJrjcl9a7MxxHqJTzFFA9yl9yk5f7etVhJAErOA9j1loEBeE6NnzczGomwcVsetWNZRAePNCQWBuWpCSc1fHEdUnT1FKvW28LJqnLwKVDdV3a59oR7QF5D0oa9fzZ7CYM57gYOAFImLd+xVXo+j0EujBvN4ngigTTnpCgusF0n2d70Bj7ARGynZtbYVvckRcuCji2NU27EIRWwH/nbmgl4QC739Q8G0s/uL1wsJNyb/DDyVIDhdvBvOXPrybC2M4+BtYTM/qY0oooHywHEfylO7pL12pt93l1EJQb441lHsnHoHoyhc/WFsnRhyldQ9kQNX5Q/ZePmV3JTYEeI/n+14e6S0xW7Br64RuMVuww70TtO/s+xuQjm+2zFEtbwCGWABzxlnmtIZHq1zHViJTt9oUWIoZzfvLSd6MliNjMW48+XKP2EZQA8L8ZBrRpzhYdV4QTPLFbY=

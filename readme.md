@@ -1,5 +1,4 @@
-[![Build Status](https://semaphoreci.com/api/v1/ddorn/gui/branches/master/shields_badge.svg)](https://semaphoreci.com/ddorn/gui)
-
+[![Build Status](https://travis-ci.org/ddorn/GUI.svg?branch=master)](https://travis-ci.org/ddorn/GUI)
 # Pygame GUI
 
 ### What is it ?

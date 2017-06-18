@@ -19,6 +19,9 @@ here = path.abspath(path.dirname(__file__))
 try:
    import pypandoc
    pypandoc.download_pandoc()
+   print(os.curdir)
+   print(here)
+   print(os.listdir(os.curdir))
    long_description = pypandoc.convert('README.md', 'rst')
 except (IOError, ImportError):
    long_description = ''
@@ -26,7 +29,7 @@ except (IOError, ImportError):
 
 setup(
     name='PygameGUILib',
-    version='0.3a11',
+    version='0.3a12',
     description='widgets for pygame wit ease',
     long_description=long_description,
     classifiers=[
