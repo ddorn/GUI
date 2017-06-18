@@ -41,5 +41,24 @@ class Point(BaseWidget):
 
 
 class Rectangle(BaseWidget):
-    def __init__(self, pos, size, color):
+    FILLED = 3
+    ROUNDED = 42
+    BORDER = 69
+
+    def __init__(self, pos, size, color, style=FILLED, **params):
         super().__init__(pos, size)
+        self.style = style
+        self.color = color
+        self.params = params
+
+    def render(self, surf):
+        if self.style == self.FILLED:
+            return pygame.draw.rect(surf, self.color, self.as_rect())
+        elif self.style == self.BORDER:
+            papy = self.params.get('width', 1)
+            return pygame.draw.rect(surf, self.color, self.as_rect(), papy)
+
+        else:
+            print('fail')
+
+__all__ = ['Rectangle', 'Point']
