@@ -12,12 +12,21 @@ from os import path
 here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the README file
-with open('readme.md', encoding='utf-8') as f:
-    long_description = f.read()
+# I really prefer Markdown to reStructuredText.  PyPi does not.  This allows me
+# to have things how I'd like, but not throw complaints when people are trying
+# to install the package and they don't have pypandoc or the README in the
+# right place.
+try:
+   import pypandoc
+   pypandoc.download_pandoc()
+   long_description = pypandoc.convert('README.md', 'rst')
+except (IOError, ImportError):
+   long_description = ''
+
 
 setup(
     name='PygameGUILib',
-    version='0.3a1',
+    version='0.3a9',
     description='widgets for pygame wit ease',
     long_description=long_description,
     classifiers=[
@@ -32,7 +41,7 @@ setup(
     author_email='diego.dorn@free.fr',
     packages=find_packages(),
     package_data={
-        '': '*'
+        '.': 'readme.*'
     },
     install_requires=['pygame'],
     setup_requires=['pytest-runner'],

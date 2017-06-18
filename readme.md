@@ -13,9 +13,13 @@
             (`latex` and `dvipng` accessible in path)
 
 ### Installation
- You can clone this repository in your project or just run
+ You can install it with pip and pypi easily by :
         
-    pip install -U git+https://github.com/ddorn/GUI.git@master#egg=GUI    
+    pip install -U PygameGUILib
+    
+ or via git and pip : 
+ 
+    pip install -U git+https://github.com/ddorn/GUI.git@release#egg=GUI    
 
 ### Use
 
