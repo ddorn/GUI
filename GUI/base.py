@@ -38,11 +38,11 @@ class BaseWidget(pygame.Rect):
 
         # positions
         if item in "x y top left bottom right topleft bottomleft topright bottomright midtop midleft midbottom midright center".split():
-            self._update()
+            self.__update()
 
         # size
         if item in "width height w h".split():
-            self._update()
+            self.__update()
 
         return super(BaseWidget, self).__getattribute__(item)
 
@@ -60,7 +60,7 @@ class BaseWidget(pygame.Rect):
         else:
             super(BaseWidget, self).__setattr__(key, value)
 
-    def _update(self):
+    def __update(self):
         """ 
         This is called each time an attribute is asked, to be sure every params are updated, beceause of callbacks
         """
@@ -108,6 +108,12 @@ class BaseWidget(pygame.Rect):
     def unfocus(self):
         """ Takes back the focus from the widget """
         self._focus = False
+
+    def update(self, event_or_list):
+        pass
+
+    def render(self, surf):
+        pass
 
 
 __all__ = ['BaseWidget']
