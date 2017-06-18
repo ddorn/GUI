@@ -26,5 +26,7 @@ setup(
     package_data={
         '': '*'
     },
-    install_requires=['pygame']
+    install_requires=['pygame'],
+    setup_requires = ['pytest-runner'],
+    tests_require = ['pytest'],
 )
