@@ -35,15 +35,14 @@ class BaseButton(BaseWidget):
         """
         super().__init__(pos, size, anchor)
         self.func = func
-        self.pressed = False
 
-    def press(self, milis=None):
+    def click(self, milis=None):
         """
         Call when the button is pressed. This start the callback function in a thread
         If :milis is given, will release the button after :milis miliseconds
         """
         start_new_thread(self.func, ())
-        self.pressed = True
+        super().click()
 
         if milis is not None:
             start_new_thread(self.release, (milis,))
@@ -55,7 +54,8 @@ class BaseButton(BaseWidget):
         """
         if milis:
             sleep(milis / 1000)
-        self.pressed = False
+
+        super().release()
 
     def render(self, display):
         raise NotImplementedError
@@ -88,7 +88,7 @@ class Button(BaseButton):
         self.color_pressed = color_pressed
 
     def render(self, display):
-        if self.pressed:
+        if self.clicked:
             color = self.color_pressed
         else:
             color = self.color
@@ -140,7 +140,7 @@ class IconButton(BaseButton):
     def render(self, display):
         """ Render the button """
 
-        if self.pressed:
+        if self.clicked:
             icon = self.icon_pressed
         else:
             icon = self.icon
@@ -270,44 +270,5 @@ class SlideBar(BaseWidget):
 __all__ = ["Button", "IconButton", "SlideBar"]
 
 if __name__ == '__main__':
-    display = pygame.display.set_mode((300, 200))
-
-    sb = SlideBar(print, (150, 100), (200, 30), 0, 160, 1, interval=4)
-
-
-    def func_b():
-        sb.color = RED
-
-
-    red = Button(func_b, (300, 200), (60, 40), 'RED', anchor=BOTTOMRIGHT)
-
-
-    def func_sb(value):
-        red.topright = 300, value
-
-
-    sb.func = func_sb
-    sb.set(0)
-
-    run = True
-    while run:
-        mouse = pygame.mouse.get_pos()
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
-
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if mouse in sb:
-                    sb.focus()
-
-                if mouse in red:
-                    red.press()
-
-            if event.type == pygame.MOUSEBUTTONUP:
-                red.release()
-                sb.unfocus()
-
-        display.fill(WHITE)
-        sb.render(display)
-        red.render(display)
-        pygame.display.flip()
+    from GUI.gui_examples.buttons import gui
+    gui()

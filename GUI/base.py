@@ -26,6 +26,7 @@ class BaseWidget(pygame.Rect):
         self._pos = pos
         self._size = size
         self._focus = False
+        self.clicked = False
 
     def __str__(self):
         return repr(self)
@@ -135,6 +136,14 @@ class BaseWidget(pygame.Rect):
     def unfocus(self):
         """ Takes back the focus from the widget """
         self._focus = False
+
+    def click(self):
+        """ Makes the widget clicked """
+        self.clicked = True
+
+    def release(self):
+        """ Unclick the widget """
+        self.clicked = False
 
     def get_focus(self):
         """ Returns the current focus state """

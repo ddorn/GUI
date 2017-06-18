@@ -255,3 +255,12 @@ def test_anchor_callback():
     assert w.anchor == CENTER
     anchor = TOPLEFT
     assert w.anchor == TOPLEFT
+
+
+def test_click(widget: BaseWidget):
+    assert widget.clicked is False
+
+    widget.click()
+    assert widget.clicked is True
+    widget.release()
+    assert widget.clicked is False
