@@ -12,13 +12,19 @@ here = path.abspath(path.dirname(__file__))
 # Get the long description from the README file
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
-    
-    
+
 setup(
-    name='Pygame GUI Lib',
-    version='1.0a',
-    description='Ease widgets for pygame',
+    name='PygameGUILib',
+    version='0.3a1',
+    description='widgets for pygame wit ease',
     long_description=long_description,
+    classifiers=[
+        'Development Status :: 3 - Alpha',
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5'
+    ],
+    keywords='pygame widget widgets gui',
     url="https://github.com/ddorn/GUI",
     author='Diego Dorn',
     author_email='diego.dorn@free.fr',
@@ -27,6 +33,6 @@ setup(
         '': '*'
     },
     install_requires=['pygame'],
-    setup_requires = ['pytest-runner'],
-    tests_require = ['pytest'],
+    setup_requires=['pytest-runner'],
+    tests_require=['pytest'],
 )
