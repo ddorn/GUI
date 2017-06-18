@@ -22,7 +22,10 @@ try:
    print(os.curdir)
    print(here)
    print(os.listdir(os.curdir))
-   long_description = pypandoc.convert('README.md', 'rst')
+   try:
+       long_description = pypandoc.convert('README.md', 'rst')
+   except RuntimeError:
+       long_description = pypandoc.convert('readme.md', "rst")
 except (IOError, ImportError):
    long_description = ''
 
