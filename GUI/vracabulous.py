@@ -32,7 +32,11 @@ class FocusSelector:
         assert len(items) > 0
 
         self.items = items
+        for i in items:
+            i.unfocus()
+
         self._selected = 0
+
         def a():
             return a
 
@@ -56,12 +60,14 @@ class FocusSelector:
         """ Select an arbitrary item, by possition or by reference """
 
         self._on_unselect[self._selected]()
+        self.selected().unfocus()
 
         if isinstance(item, int):
             self._selected = item % len(self)
         else:
             self._selected = self.items.index(item)
 
+        self.selected().focus()
         self._on_select[self._selected]()
 
     def selected(self):
@@ -75,7 +81,10 @@ class FocusSelector:
         return self.items.index(item) == self._selected
 
     def on_select(self, item, action):
-        """ Adds an action to make when an object is selected """
+        """
+        Adds an action to make when an object is selected
+        Only one action can be stored this way
+        """
 
         if not isinstance(item, int):
             item = self.items.index(item)
@@ -91,4 +100,67 @@ class FocusSelector:
         self._on_unselect[item] = action
 
 
-__all__ = ['FocusSelector', 'FPSIndicator']
+class Separator:
+    """
+    A positionning tool.
+
+    Like a V2, but gives tuples when added or substrayed. This is usefull for functions that take only tuples
+    Gives still a Separator when mul/divided
+    """
+    def __init__(self, x, y=None):
+        if y is None:
+            self.x = x[0]
+            self.y = y[1]
+
+        else:
+            self.x = x
+            self.y = y
+
+    def __getitem__(self, item):
+
+        if item == 0:
+            return self.x
+
+        if item == 1:
+            return self.y
+
+        raise IndexError
+
+    def __setitem__(self, key, value):
+        if key == 0:
+            self.x = value
+            return
+
+        if key == 1:
+            self.y = value
+            return
+
+        raise IndexError
+
+    def __neg__(self):
+        return Separator(-self.x, -self.y)
+
+    def __add__(self, other):
+        return self.x + other[0], self.y + other[1]
+
+    def __radd__(self, other):
+        return self + other
+
+    def __sub__(self, other):
+        return self.x - other[0], self.y - other[1]
+
+    def __rsub__(self, other):
+        return -self + other
+
+    def __mul__(self, other):
+        return Separator(self.x * other, self.y * other)
+
+    def __rmul__(self, other):
+        return self*other
+
+    def __truediv__(self, other):
+        return self * (1/other)
+
+
+
+__all__ = ['FocusSelector', 'FPSIndicator', 'Separator']
