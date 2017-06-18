@@ -1,3 +1,5 @@
+[![Build Status](https://semaphoreci.com/api/v1/ddorn/gui/branches/master/shields_badge.svg)](https://semaphoreci.com/ddorn/gui)
+
 # Pygame GUI
 
 ### What is it ?
@@ -64,7 +66,9 @@ we do not bother if the user clicks it.
 You're welcome ! 
 
 ###### How can you help ?
- Do not hesitate to [contact me](mailto:diego.dorn@free.fr) to discuss aboute code, optimisation or functionnalities. 
+ Do not hesitate to [contact me per mail](mailto:diego.dorn@free.fr) 
+ or [join the slack chat](https://join.slack.com/pygamegui/shared_invite/MTk5NDY0Njg4MTE1LTE0OTc4MDcwMzYtYWU5Mjc4ZjA1ZA)
+ to discuss aboute code, optimisation or functionnalities. 
  You can of course make any push request you want !  
  Feel free to report any issue you see as I do not have strong tests (I mean, no tests !)
  
@@ -89,3 +93,4 @@ Here is a list of projets that uses my library, take inspiration !
  * Your project !
  
 Examples at the and of each file can also give you a lot of samples of how to use this library :)
+There is also a folder full of example that you *will* apreciate !
