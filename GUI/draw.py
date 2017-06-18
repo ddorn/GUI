@@ -5,7 +5,6 @@ This is a module for easy drawings.
 """
 
 import pygame
-from math import sin, cos, asin, acos
 from pygame import gfxdraw
 
 try:
@@ -21,7 +20,8 @@ def line(surf, start, end, color=BLACK, width=1, style=FLAT):
 
     width = round(width, 1)
     if width == 1:
-        return pygame.draw.aaline(surf, color, start, end)
+        # return pygame.draw.aaline(surf, color, start, end)
+        return gfxdraw.line(surf, *start, *end, color)
 
     start = V2(*start)
     end = V2(*end)
