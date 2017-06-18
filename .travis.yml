@@ -8,7 +8,7 @@ install:
 
 script: pytest
 
-deplay:
+deploy:
   provider: pypi
   user: ddorn
   password:
