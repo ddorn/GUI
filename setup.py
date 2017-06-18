@@ -11,6 +11,10 @@ from os import path
 
 here = path.abspath(path.dirname(__file__))
 
+print(__file__)
+print(os.curdir)
+print(os.listdir(os.curdir))
+
 # Get the long description from the README file
 with open(path.join(os.curdir, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
