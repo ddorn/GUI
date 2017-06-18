@@ -45,7 +45,7 @@ class Rectangle(BaseWidget):
     ROUNDED = 42
     BORDER = 69
 
-    def __init__(self, pos, size, color, style=FILLED, **params):
+    def __init__(self, pos, size, color=PINK, style=FILLED, **params):
         super().__init__(pos, size)
         self.style = style
         self.color = color

@@ -10,6 +10,7 @@ from GUI.text import SimpleText
 
 class FPSIndicator(SimpleText):
     """ A small text on the top right corner of the screen shoing the fps """
+
     def __init__(self, clock):
         self.clock = clock
 
@@ -34,6 +35,7 @@ class FocusSelector:
         self.items = items
         for i in items:
             i.unfocus()
+        self.items[0].focus()
 
         self._selected = 0
 
@@ -75,6 +77,10 @@ class FocusSelector:
 
         return self.items[self._selected]
 
+    def selected_index(self):
+        """ The index of the selected item in the item list """
+        return self._selected
+
     def is_selected(self, item):
         """ True is the object is focused """
 
@@ -107,14 +113,18 @@ class Separator:
     Like a V2, but gives tuples when added or substrayed. This is usefull for functions that take only tuples
     Gives still a Separator when mul/divided
     """
+
     def __init__(self, x, y=None):
         if y is None:
             self.x = x[0]
-            self.y = y[1]
+            self.y = x[1]
 
         else:
             self.x = x
             self.y = y
+
+    def __repr__(self):
+        return "<Sep({}, {})>".format(self.x, self.y)
 
     def __getitem__(self, item):
 
@@ -137,6 +147,9 @@ class Separator:
 
         raise IndexError
 
+    def __eq__(self, other):
+        return self.x == other[0] and self.y == other[1]
+
     def __neg__(self):
         return Separator(-self.x, -self.y)
 
@@ -156,11 +169,10 @@ class Separator:
         return Separator(self.x * other, self.y * other)
 
     def __rmul__(self, other):
-        return self*other
+        return self * other
 
     def __truediv__(self, other):
-        return self * (1/other)
-
+        return self * (1 / other)
 
 
 __all__ = ['FocusSelector', 'FPSIndicator', 'Separator']
