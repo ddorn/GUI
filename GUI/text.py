@@ -120,7 +120,7 @@ class SimpleText(BaseWidget):
 class InLineTextBox(SimpleText):
     """ A textbox with scrolling in one line """
 
-    def __init__(self, pos, size, color=BLUE, bg_color=None, font=DEFAULT, anchor='center'):
+    def __init__(self, pos, size, color=BLUE, bg_color=None, font=DEFAULT, anchor='center', default_text=''):
         """
         Creates a new InLineTextBox object.
 
@@ -135,10 +135,11 @@ class InLineTextBox(SimpleText):
             See http://www.pygame.org/docs/ref/rect.html#pygame.Rect for a list of possible anchors.
         """
 
+        self.default_text = font.render(default_text, True, LIGHT_GREY, bg_color)
+
         super().__init__('', pos, color, bg_color, font, anchor)
         self.size = size, 42
         self._cursor = 0
-        self.cursor_visible = True
 
         self._render()
 
@@ -163,18 +164,11 @@ class InLineTextBox(SimpleText):
         else:
             self._cursor = value
 
-    def cursor_on(self):
-        """ The cursor is now visible """
-
-        self.cursor_visible = True
-
-    def cursor_off(self):
-        """ The cursor is now invisible """
-
-        self.cursor_visible = False
-
     def cursor_pos(self):
         """ The cursor position in pixels """
+
+        if len(self) == 0:
+            return self.left + self.default_text.get_width()
 
         papy = self._surface.get_width()
         if papy > self.w:
@@ -258,13 +252,18 @@ class InLineTextBox(SimpleText):
         if self.text != self._last_text:
             self._render()
 
-        papy = self._surface.get_width()
-        if papy <= self.width:
-            display.blit(self._surface, (self.topleft, self.size))
-        else:
-            display.blit(self._surface, (self.topleft, self.size), ((papy - self.w, 0), self.size))
+        if self.text:
+            papy = self._surface.get_width()
+            if papy <= self.width:
+                display.blit(self._surface, (self.topleft, self.size))
+            else:
+                display.blit(self._surface, (self.topleft, self.size), ((papy - self.w, 0), self.size))
 
-        if self.cursor_visible:
+        else:
+            display.blit(self.default_text, (self.topleft, self.size))
+
+
+        if self._focus:
             groom = self.cursor_pos()
             line(display, (groom, self.top), (groom, self.bottom), CONCRETE)
 
@@ -275,7 +274,7 @@ class InLinePassBox(InLineTextBox):
     STRANGE = 42
     DOTS = 69
 
-    def __init__(self, pos, size, color=BLUE, bg_color=None, font=DEFAULT, anchor='center', style=DOTS):
+    def __init__(self, pos, size, color=BLUE, bg_color=None, font=DEFAULT, anchor='center', default_text='', style=DOTS):
         """
         TextBow that doesn't show the text but other thing or some dots
         See also InLineTextBox.
@@ -286,7 +285,7 @@ class InLinePassBox(InLineTextBox):
         self._shawn_text = ''
         self.style = style
 
-        super().__init__(pos, size, color, bg_color, font, anchor)
+        super().__init__(pos, size, color, bg_color, font, anchor, default_text)
 
     @property
     def shawn_text(self):
@@ -317,6 +316,8 @@ class InLinePassBox(InLineTextBox):
 
     def cursor_pos(self):
         """ The cursor position in pixels """
+        if len(self) == 0:
+            return self.left + self.default_text.get_width()
 
         papy = self._surface.get_width()
         if papy > self.w:
@@ -343,13 +344,16 @@ class InLinePassBox(InLineTextBox):
         if self.shawn_text != self._last_text:
             self._render()
 
-        papy = self._surface.get_width()
-        if papy <= self.width:
-            display.blit(self._surface, (self.topleft, self.size))
+        if self.text:
+            papy = self._surface.get_width()
+            if papy <= self.width:
+                display.blit(self._surface, (self.topleft, self.size))
+            else:
+                display.blit(self._surface, (self.topleft, self.size), ((papy - self.w, 0), self.size))
         else:
-            display.blit(self._surface, (self.topleft, self.size), ((papy - self.w, 0), self.size))
+            display.blit(self.default_text, (self.topleft, self.size))
 
-        if self.cursor_visible:
+        if self._focus:
             groom = self.cursor_pos()
             line(display, (groom, self.top), (groom, self.bottom), CONCRETE)
 
