@@ -37,13 +37,24 @@ class BaseButton(BaseWidget):
         self.func = func
         self.pressed = False
 
-    def press(self):
-        """ Call when the button is pressed. This start the callback function in a thread """
+    def press(self, milis=None):
+        """
+        Call when the button is pressed. This start the callback function in a thread
+        If :milis is given, will release the button after :milis miliseconds
+        """
         start_new_thread(self.func, ())
         self.pressed = True
 
-    def release(self):
-        """ Call this when the button is released """
+        if milis is not None:
+            start_new_thread(self.release, (milis,))
+
+    def release(self, milis=0):
+        """
+        Call this when the button is released
+        Blocks for :milis miliseconds (used by .press() for auto release)
+        """
+        if milis:
+            sleep(milis / 1000)
         self.pressed = False
 
     def render(self, display):
