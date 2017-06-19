@@ -32,7 +32,7 @@ except (IOError, ImportError):
 
 setup(
     name='PygameGUILib',
-    version='0.3a12',
+    version='0.4a1',
     description='widgets for pygame wit ease',
     long_description=long_description,
     classifiers=[
