@@ -3,9 +3,9 @@
 """ The very bases of the GUI module """
 
 import pygame
-from pygame.event import EventType
 
-from .locals import *
+from GUI.locals import CENTER, TOPLEFT, TOPRIGHT, MIDTOP, MIDLEFT, MIDRIGHT, BOTTOMRIGHT, MIDBOTTOM, BOTTOMLEFT
+from pygame.event import EventType
 
 
 class BaseWidget(pygame.Rect):
@@ -157,7 +157,7 @@ class BaseWidget(pygame.Rect):
             return event_or_list
 
     def render(self, surf):
-        return self.as_rect()
+        raise NotImplementedError
 
 
 __all__ = ['BaseWidget']

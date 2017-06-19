@@ -2,11 +2,8 @@ import pygame
 from pygame.locals import *
 from random import choice
 
-from GUI.locals import *
-from GUI.geo.basics import Point
-from GUI.geo.bezier import Bezier
-from GUI.math import V2
-from GUI.vracabulous import FPSIndicator
+from GUI import COLORS, WHITE, ORANGE, FPSIndicator, V2
+from GUI.geo import Bezier, Point
 
 SCREEN_SIZE = 800, 500
 ALL = (0, 0), SCREEN_SIZE
@@ -77,10 +74,9 @@ def gui():
                     mdist = p.dist_to(mouse)
                     the_p = i
 
-            if points[the_p].pos != mouse:
-                points[the_p].pos = mouse
-                bezier.points[the_p] = V2(mouse)
-                render = True
+            render = points[the_p].pos != mouse
+            points[the_p].pos = mouse
+            bezier.points[the_p] = V2(mouse)
 
         # #######
         # Draw all

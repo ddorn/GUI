@@ -1,21 +1,13 @@
 import pygame
 
+from GUI.locals import TURQUOISE, PINK
 from GUI.draw import circle, line
-
-try:
-    from .base import BaseWidget
-    from .locals import *
-    from .draw import *
-    from .math import V2
-
-except ImportError:
-    from GUI.base import BaseWidget
-    from GUI.colors import bw_contrasted
-    from GUI.locals import *
-    from GUI.math import V2
+from GUI.base import BaseWidget
+from GUI.math import V2
 
 CIRCLE = 0
 CROSS = 1
+
 
 class Point(BaseWidget):
     def __init__(self, pos, size, color=TURQUOISE, shape=CIRCLE):
@@ -37,7 +29,7 @@ class Point(BaseWidget):
 
     def dist_to(self, pos):
         pos = V2(*pos)
-        return (pos-self.pos).norm()
+        return (pos - self.pos).norm()
 
 
 class Rectangle(BaseWidget):
@@ -60,5 +52,6 @@ class Rectangle(BaseWidget):
 
         else:
             print('fail')
+
 
 __all__ = ['Rectangle', 'Point']

@@ -1,12 +1,10 @@
 # coding=utf-8
 import os
 import pygame
-from pygame import gfxdraw
 from pygame.locals import *
 from random import randint, choice
 
-from GUI.draw import *
-from GUI.draw import ring
+from GUI.draw import ring, circle, line
 from GUI.locals import *
 
 SCREEN_SIZE = 500, 500
@@ -194,7 +192,6 @@ def gui():
     pygame.event.set_allowed([QUIT, KEYDOWN, MOUSEBUTTONDOWN])
 
     game = Morpion()
-    turn = randint(1, 2)
 
     run = True
     while run:

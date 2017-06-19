@@ -4,10 +4,9 @@ import os
 import pygame
 from pygame.locals import *
 
-from GUI import *
-from GUI.geo.basics import Rectangle
+from GUI import Separator as Sep, InLinePassBox, InLineTextBox, Button, FocusSelector, line
+from GUI.geo import Rectangle
 from GUI.locals import *
-from GUI.vracabulous import Separator as Sep
 
 pygame.init()
 # noinspection PyArgumentList
@@ -93,11 +92,11 @@ def gui():
                     # or give them to the selected box
                     focus.selected().update(e)
 
-            if e.type == VIDEORESIZE:
+            elif e.type == VIDEORESIZE:
                 SCREEN_SIZE = e.size
                 screen = new_widow()
 
-            if e.type == MOUSEBUTTONDOWN:
+            elif e.type == MOUSEBUTTONDOWN:
                 if mouse in login:
                     focus.select(login)
 
@@ -110,7 +109,7 @@ def gui():
                 elif mouse in sign_in:
                     sign_in.click()
 
-            if e.type == MOUSEBUTTONUP:
+            elif e.type == MOUSEBUTTONUP:
                 sign_in.release()
                 sign_up.release()
 

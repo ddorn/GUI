@@ -1,10 +1,11 @@
 # coding=utf-8
-
+import os
 import pygame
-
+from pygame.locals import *
 from collections import defaultdict
 
-from GUI.locals import FLASH_CREEN, TOPLEFT, MIDNIGHT_BLUE
+from GUI import WHITE
+from GUI.locals import FLASH_CREEN, MIDNIGHT_BLUE, TOPLEFT
 from GUI.text import SimpleText
 
 
@@ -17,7 +18,7 @@ class FPSIndicator(SimpleText):
         def text():
             return str(round(self.clock.get_fps()))
 
-        super().__init__(text, (10, 14), FLASH_CREEN, MIDNIGHT_BLUE)
+        super().__init__(text, (0, 0), FLASH_CREEN, MIDNIGHT_BLUE, anchor=TOPLEFT)
 
     def render(self, display):
         pygame.draw.rect(display, MIDNIGHT_BLUE, ((0, 0), (20, 28)))
@@ -175,4 +176,94 @@ class Separator:
         return self * (1 / other)
 
 
-__all__ = ['FocusSelector', 'FPSIndicator', 'Separator']
+class Windows:
+    """
+    This is a base class for a small pygame project, you should implement
+        - the __init__(): where you create all widgets
+        - the update_on_event() to listen to event the way you want
+        - the render() to draw your widgets
+        Don't forget to call super() on those methods
+
+    class variable to customise the project : FPS, VIDEO_OPTION, SCREEN_SIZE, NAME
+    """
+
+    SCREEN_SIZE = 800, 500
+    NAME = 'Empty project'
+    VIDEO_OPTIONS = DOUBLEBUF | VIDEORESIZE
+    FPS = 60
+
+    def __init__(self):
+        """
+        This is a base class for a small pygame project, you should implement
+            - the __init__(): where you create all widgets
+            - the update_on_event() to listen to event the way you want
+            - the render() to draw your widgets
+            Don't forget to call super() on those methods
+
+        class variable to customise the project : FPS, VIDEO_OPTION, SCREEN_SIZE, NAME
+        """
+
+        self.running = True
+        self.screen = self.new_screen()
+        self.clock = pygame.time.Clock()
+
+        self.fps = FPSIndicator(self.clock)
+
+    def update_on_event(self, e):
+        """ Deals with a single event """
+        if e.type == QUIT:
+            self.running = False
+
+        elif e.type == KEYDOWN:
+            if e.key == K_ESCAPE:
+                self.running = False
+
+            elif e.key == K_F4 and e.mod & KMOD_ALT:  # Alt+F4 --> quits
+                self.running = False
+
+        elif e.type == VIDEORESIZE:
+            self.SCREEN_SIZE = e.size
+            self.screen = self.new_screen()
+
+    def update(self):
+        """ Gets all events and deal with then by calling update_on_event() """
+
+        for e in pygame.event.get():
+            self.update_on_event(e)
+
+    def render(self):
+        """ Renders the screen. Here you must draw everything """
+
+        self.screen.fill(WHITE)
+        self.fps.render(self.screen)
+
+    def update_screen(self):
+        """ Refreshes the screen. You don't need to override this except to update only small portins of the screen """
+
+        self.clock.tick(self.FPS)
+        pygame.display.update()
+
+    def destroy(self):
+        """ Clean what is needed at the end and returns what run() returns """
+        pass
+
+    def run(self):
+        """ The run loop. Returns self.destroy() """
+
+        while self.running:
+            self.update()
+            self.render()
+            self.update_screen()
+
+        return self.destroy()
+
+    def new_screen(self):
+        """ Makes a new screen with a size of SCREEN_SIZE, and VIDEO_OPTION as flags. Sets the windows name to NAME """
+
+        os.environ['SDL_VIDEO_CENTERED'] = '1'
+        pygame.display.set_caption(self.NAME)
+
+        return pygame.display.set_mode(self.SCREEN_SIZE, self.VIDEO_OPTIONS)
+
+
+__all__ = ['FocusSelector', 'FPSIndicator', 'Separator', 'Windows']
