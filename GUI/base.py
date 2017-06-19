@@ -3,9 +3,9 @@
 """ The very bases of the GUI module """
 
 import pygame
-from pygame.event import EventType
 
-from .locals import *
+from GUI.locals import CENTER
+from pygame.event import EventType
 
 
 class BaseWidget(pygame.Rect):

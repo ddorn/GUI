@@ -1,18 +1,10 @@
 import pygame
 from pygame import gfxdraw
 
+from GUI import GREEN
 
-try:
-    from .base import BaseWidget
-    from .locals import *
-    from .draw import *
-    from .math import V2
-
-except ImportError:
-    from GUI.base import BaseWidget
-    from GUI.colors import bw_contrasted
-    from GUI.locals import *
-    from GUI.math import V2, comb
+from GUI.base import BaseWidget
+from GUI.math import V2, comb
 
 
 class Bezier(BaseWidget):
@@ -20,7 +12,7 @@ class Bezier(BaseWidget):
         super().__init__(pos, size)
 
         self.points = [V2(*p) for p in points]
-        self.color = GREEN
+        self.color = color
         self.line_width = width
         self.reso = reso
 
@@ -58,6 +50,5 @@ class Bezier(BaseWidget):
 
 
 if __name__ == '__main__':
-    from GUI.gui_examples import gui
-
+    from GUI.gui_examples.bezier import gui
     gui()

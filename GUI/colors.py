@@ -1,7 +1,4 @@
-try:
-    from .locals import *
-except ImportError:
-    from GUI.locals import *
+from GUI.locals import WHITE, BLACK
     
     
 def bw_contrasted(color, threshold=200):
