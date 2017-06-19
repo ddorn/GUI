@@ -1,0 +1,21 @@
+language: python
+python:
+  - '3.6'
+
+install:
+  - pip install pygame
+  - pip install pypandoc
+script: pytest
+
+deploy:
+  provider: pypi
+  user: ddorn
+  password:
+    secure: TD7M7X7wxcausIHQxHQrYj77Ab18eZmy70kvdoo0B/GhsryFiLmg5FS9XKfqEXUE4+ZY/lFxl/2DQ3Ns/U3lGbcdHY1oQEpyvZlqYOhVDp+b7WTfo7VMOjjduFiPZgTOFrbw1YP5GNtZa1dcEtqOeDrwfo5tWZJRYD4zOFBB0tHb63XFz2A/IsCCZBc43JSAHSpcQ07xSGPc0CRQjDCmMn18iOoj14mupRgpAIKl6T++smLyOYYW5tm69sMnjM91XKXgObICfXtJO10xRMTjGqWscGdC7Qz/w5tar3LRdchXIvWWmsWn13wOaYwY9efL9ZsFQYHDatsF9U1OMKIjCCTzQn9QWJn1lxQK8HgS1AhyCZcu/aDEF/kmyIXkh81cmf3yibydLYV4QMq+8vFnZj0RloAiHO6ovwEveaLFRW7zA4f8P47NCrgAYiJrdKX2UyWAHqCknWuFFVcqFIHr6UwT9/f4cDnWO0i/TgLQlWPxmEL7crR8Tuolq4XNt59ExX6VdiIaIKXhchqx5WnZ/KokAKeywVhoel49dthupvKRSNtmexueSxe85hBDhQR70HRmptWjeFYhOCj1QeSyMoANJBxjkTjRiwaj9x/5jhI71Xu3zu+70C0Lb6+7zw4cPK/yoHwg9blhRUg3/deK8/IVBPkgwBE7VpYoPgOVAXc=
+  on:
+    branch: release
+  skip_upload_docs: true # TODO : docs
+
+notifications:
+  slack:
+    secure: r9rjGrb5ye3LiL7fVwHx3SxHCn4ZSFV3vNzQqiqhQ8vosZ3QTdkKdYl+zk+jJpf0oqwbsBIaHm6AA2bHWDcr7+3R+u0NqHj0rxGrq0w3L4+jBlv5FlOcr+LuikNUvfwiKhqRIO3xNIDxIG+Cc/XF/L+EACFQ+cCS+p8yyi8ScKno/0Kcp19rvuDbxmlJiGfnLHlhPs4RIM5kYRG7SkkR+lmS2PdRM5MqHtJrjcl9a7MxxHqJTzFFA9yl9yk5f7etVhJAErOA9j1loEBeE6NnzczGomwcVsetWNZRAePNCQWBuWpCSc1fHEdUnT1FKvW28LJqnLwKVDdV3a59oR7QF5D0oa9fzZ7CYM57gYOAFImLd+xVXo+j0EujBvN4ngigTTnpCgusF0n2d70Bj7ARGynZtbYVvckRcuCji2NU27EIRWwH/nbmgl4QC739Q8G0s/uL1wsJNyb/DDyVIDhdvBvOXPrybC2M4+BtYTM/qY0oooHywHEfylO7pL12pt93l1EJQb441lHsnHoHoyhc/WFsnRhyldQ9kQNX5Q/ZePmV3JTYEeI/n+14e6S0xW7Br64RuMVuww70TtO/s+xuQjm+2zFEtbwCGWABzxlnmtIZHq1zHViJTt9oUWIoZzfvLSd6MliNjMW48+XKP2EZQA8L8ZBrRpzhYdV4QTPLFbY=
