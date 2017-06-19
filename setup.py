@@ -25,7 +25,11 @@ try:
    try:
        long_description = pypandoc.convert('README.md', 'rst')
    except RuntimeError:
-       long_description = pypandoc.convert('readme.md', "rst")
+       try:
+           long_description = pypandoc.convert('readme.md', "rst")
+       except RuntimeError:
+           long_description=''
+           print('FUCK THE DESCRIPTION')
 except (IOError, ImportError):
    long_description = ''
 
