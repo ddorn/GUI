@@ -32,14 +32,15 @@ except (IOError, ImportError):
 
 setup(
     name='PygameGUILib',
-    version='0.3a12',
+    version='0.4a1',
     description='widgets for pygame wit ease',
     long_description=long_description,
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5'
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6'
     ],
     keywords='pygame widget widgets gui',
     url="https://github.com/ddorn/GUI",
