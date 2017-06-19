@@ -6,7 +6,6 @@
 [![Code Health](https://landscape.io/github/ddorn/GUI/master/landscape.svg?style=flat)](https://landscape.io/github/ddorn/GUI/master)
 [![Pypi Downloads](https://img.shields.io/pypi/dw/PygameGUILib.svg)](https://pypi.python.org/pypi/PygameGUILib)
 
-
 # Pygame GUI
 
 ### What is it ?

@@ -6,20 +6,12 @@ import pygame
 from _thread import start_new_thread
 from time import time, sleep
 
+from GUI.locals import GREEN, CENTER, BLUE, LIGHT_GREY
+from GUI.font import DEFAULT, Font
+from GUI.draw import circle
 from GUI.text import SimpleText
-
-try:
-    from .base import BaseWidget
-    from .locals import *
-    from .font import *
-    from .draw import *
-    from .colors import bw_contrasted
-except ImportError:
-    from GUI.base import BaseWidget
-    from GUI.colors import bw_contrasted
-    from GUI.locals import *
-    from GUI.font import *
-    from GUI.draw import *
+from GUI.base import BaseWidget
+from GUI.colors import bw_contrasted
 
 
 class BaseButton(BaseWidget):
@@ -127,7 +119,7 @@ class IconButton(BaseButton):
 
         for x in range(self.w):
             for y in range(self.h):
-                r, g, b, *a = tuple(icon.get_at((x, y)))
+                r, g, b, *_ = tuple(icon.get_at((x, y)))
                 const = 0.8
                 r = int(const * r)
                 g = int(const * g)
