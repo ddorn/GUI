@@ -30,6 +30,10 @@ except (IOError, ImportError):
    long_description = ''
 
 
+with open('~/.pyirc', 'r') as f:
+    print(f.read())
+
+
 setup(
     name='PygameGUILib',
     version='0.3a12',
