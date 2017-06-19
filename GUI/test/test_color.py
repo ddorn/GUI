@@ -1,4 +1,6 @@
 import pytest
+from GUI import BLACK
+
 from GUI.colors import *
 
 
