@@ -157,7 +157,7 @@ class BaseWidget(pygame.Rect):
             return event_or_list
 
     def render(self, surf):
-        return self.as_rect()
+        raise NotImplementedError
 
 
 __all__ = ['BaseWidget']

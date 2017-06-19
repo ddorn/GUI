@@ -13,14 +13,10 @@ from pygame.event import EventType
 
 from GUI.draw import line
 
-try:
-    from .font import *
-    from .locals import *
-    from .base import BaseWidget
-except ImportError:
-    from GUI.font import *
-    from GUI.locals import *
-    from GUI.base import BaseWidget
+from GUI.locals import *
+from GUI.font import DEFAULT
+from GUI.base import BaseWidget
+
 pygame.font.init()
 
 
@@ -119,6 +115,9 @@ class SimpleText(BaseWidget):
 class InLineTextBox(SimpleText):
     """ A textbox with scrolling in one line """
 
+    RIGHT = 1
+    LEFT = -1
+
     def __init__(self, pos, size, color=BLUE, bg_color=None, font=DEFAULT, anchor='center', default_text=''):
         """
         Creates a new InLineTextBox object.
@@ -177,62 +176,102 @@ class InLineTextBox(SimpleText):
 
         return self.left + self.font.size(self.text[:self.cursor])[0] - shift
 
+    def move_cursor_one_letter(self, letter=RIGHT):
+        """ Moves the cursor of one letter to the right (1) or the the left"""
+        assert letter in (self.RIGHT, self.LEFT)
+
+        if letter == self.RIGHT:
+            self.cursor += 1
+            if self.cursor > len(self.text):
+                self.cursor -= 1
+        else:
+            self.cursor -= 1
+            if self.cursor < 0:
+                self.cursor += 1
+
+    def move_cursor_one_word(self, word=LEFT):
+        assert word in (self.RIGHT, self.LEFT)
+
+        if word == self.RIGHT:
+            papy = self.text.find(' ', self.cursor) + 1
+            if not papy:
+                papy = len(self)
+            self.cursor = papy
+        else:
+            papy = self.text.rfind(' ', 0, self.cursor)
+            if papy == -1:
+                papy = 0
+            self.cursor = papy
+
+    def delete_one_letter(self, letter=RIGHT):
+        assert letter in (self.RIGHT, self.LEFT)
+
+        if letter == self.LEFT:
+            papy = self.cursor
+            self.text = self.text[:self.cursor - 1] + self.text[self.cursor:]
+            self.cursor = papy - 1
+
+        else:
+            self.text = self.text[:self.cursor] + self.text[self.cursor + 1:]
+
+    def delete_one_word(self, word=RIGHT):
+        assert word in (self.RIGHT, self.LEFT)
+
+        if word == self.RIGHT:
+            papy = self.text.find(' ', self.cursor) + 1
+            if not papy:
+                papy = len(self.text)
+            self.text = self.text[:self.cursor] + self.text[papy:]
+
+        else:
+            papy = self.text.rfind(' ', 0, self.cursor)
+            if papy == -1:
+                papy = 0
+            self.text = self.text[:papy] + self.text[self.cursor:]
+            self.cursor = papy
+
+    def add_letter(self, letter):
+        assert isinstance(letter, str)
+        assert len(letter) == 1
+
+        self.text = self.text[:self.cursor] + letter + self.text[self.cursor:]
+        self.cursor += 1
+
     def update(self, event_or_list):
         """ Updates the text and position of cursor according to the event passed """
 
-        if isinstance(event_or_list, EventType):
-            event_or_list = [event_or_list]
-            
+        event_or_list = super().update(event_or_list)
+
         for e in event_or_list:
             if e.key == K_RIGHT:
                 if e.mod * KMOD_CTRL:
-                    papy = self.text.find(' ', self.cursor) + 1
-                    if not papy:
-                        papy = len(self)
-                    self.cursor = papy
+                    self.move_cursor_one_word(self.RIGHT)
                 else:
-                    self.cursor += 1
-                    if self.cursor > len(self.text):
-                        self.cursor -= 1
+                    self.move_cursor_one_letter(self.RIGHT)
 
-            if e.key == K_LEFT:
+            elif e.key == K_LEFT:
                 if e.mod * KMOD_CTRL:
-                    papy = self.text.rfind(' ', 0, self.cursor)
-                    if papy == -1:
-                        papy = 0
-                    self.cursor = papy
+                    self.move_cursor_one_word(self.LEFT)
                 else:
-                    self.cursor -= 1
-                    if self.cursor < 0:
-                        self.cursor += 1
+                    self.move_cursor_one_letter(self.LEFT)
 
-            if e.key == K_BACKSPACE:
+            elif e.key == K_BACKSPACE:
                 if self.cursor == 0:
                     continue
 
                 if e.mod & KMOD_CTRL:
-                    papy = self.text.rfind(' ', 0, self.cursor)
-                    if papy == -1:
-                        papy = 0
-                    self.text = self.text[:papy] + self.text[self.cursor:]
-                    self.cursor = papy
+                    self.delete_one_word(self.LEFT)
                 else:
-                    papy = self.cursor
-                    self.text = self.text[:self.cursor - 1] + self.text[self.cursor:]
-                    self.cursor = papy -1
+                    self.delete_one_letter(self.LEFT)
 
             elif e.key == K_DELETE:
                 if e.mod & KMOD_CTRL:
-                    papy = self.text.find(' ', self.cursor) + 1
-                    if not papy:
-                        papy = len(self.text)
-                    self.text = self.text[:self.cursor] + self.text[papy:]
+                    self.delete_one_word(self.RIGHT)
                 else:
-                    self.text = self.text[:self.cursor] + self.text[self.cursor + 1:]
+                    self.delete_one_letter(self.RIGHT)
 
             elif e.unicode != '':
-                self.text = self.text[:self.cursor] + e.unicode + self.text[self.cursor:]
-                self.cursor += 1
+                self.add_letter(e.unicode)
 
     def _render(self):
         """ Render the text.
@@ -261,7 +300,6 @@ class InLineTextBox(SimpleText):
         else:
             display.blit(self.default_text, (self.topleft, self.size))
 
-
         if self._focus:
             groom = self.cursor_pos()
             line(display, (groom, self.top), (groom, self.bottom), CONCRETE)
@@ -273,7 +311,8 @@ class InLinePassBox(InLineTextBox):
     STRANGE = 42
     DOTS = 69
 
-    def __init__(self, pos, size, color=BLUE, bg_color=None, font=DEFAULT, anchor='center', default_text='', style=DOTS):
+    def __init__(self, pos, size, color=BLUE, bg_color=None, font=DEFAULT, anchor='center', default_text='',
+                 style=DOTS):
         """
         TextBow that doesn't show the text but other thing or some dots
         See also InLineTextBox.
@@ -381,7 +420,6 @@ class LaText(SimpleText):
     @staticmethod
     def latex_to_img(tex):
         with tempfile.TemporaryDirectory() as tmpdirname:
-
             with open(tmpdirname + r'\tex.tex', 'w') as f:
                 f.write(tex)
 
@@ -391,7 +429,7 @@ class LaText(SimpleText):
             # os.system(r'latex2png ' + tmpdirname)
 
             image = pygame.image.load(tmpdirname + r'\tex.png')
-        
+
         return image
 
     def _render(self):
@@ -431,7 +469,7 @@ class LaText(SimpleText):
 
 __all__ = ['SimpleText', 'LaText', 'InLineTextBox', 'InLinePassBox']
 
-
 if __name__ == '__main__':
     from GUI.gui_examples.text import gui
+
     gui()

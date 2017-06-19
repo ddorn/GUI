@@ -223,10 +223,9 @@ def test_as_rect(widget: BaseWidget):
     assert widget.as_rect() == ((100, 200), (50, 20))
 
 
-def test_render_returns_rect(widget: BaseWidget, screen):
-    ret = widget.render(screen)
-
-    assert ret == ((100, 200), (50, 20))
+def test_render_raises(widget: BaseWidget, screen):
+    with pytest.raises(NotImplementedError):
+        widget.render(screen)
 
 
 def test_update_returns_events(widget: BaseWidget):

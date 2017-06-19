@@ -4,7 +4,7 @@ import pygame
 
 from collections import defaultdict
 
-from GUI.locals import FLASH_CREEN, TOPLEFT, MIDNIGHT_BLUE
+from GUI.locals import FLASH_CREEN, MIDNIGHT_BLUE
 from GUI.text import SimpleText
 
 

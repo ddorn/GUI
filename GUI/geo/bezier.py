@@ -28,7 +28,7 @@ class Bezier(BaseWidget):
 
             end = V2(0, 0)
             for k, p in enumerate(self.points):
-                end += comb(n, k) * p * t ** k * tt ** (n-k)
+                end += comb(n, k) * p * t ** k * tt ** (n - k)
 
             if end.ti == last_pos:
                 i += 1
@@ -43,12 +43,19 @@ class Bezier(BaseWidget):
                 surf.set_at(end.ti, color)
             else:
                 x, y = end.ti
-                gfxdraw.aacircle(surf, x, y, round(self.line_width/2), color)
-                gfxdraw.filled_circle(surf, x, y, round(self.line_width/2), color)
+                gfxdraw.aacircle(surf, x, y, round(self.line_width / 2), color)
+                gfxdraw.filled_circle(surf, x, y, round(self.line_width / 2), color)
 
         print(i, self.reso, sep='/')
 
 
-if __name__ == '__main__':
+def example():
     from GUI.gui_examples.bezier import gui
     gui()
+
+
+__all__ = ['Bezier']
+
+
+if __name__ == '__main__':
+    example()
