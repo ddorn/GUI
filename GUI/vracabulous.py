@@ -179,6 +179,7 @@ class Windows:
 
     SCREEN_SIZE = 800, 500
     NAME = 'Empty project'
+    VIDEO_OPTION = DOUBLEBUF | VIDEORESIZE
 
     def __init__(self):
         self.running = True
@@ -217,13 +218,13 @@ class Windows:
         while self.running:
             self.update()
             self.render()
-        self.destroy()
+        return self.destroy()
 
     def new_screen(self):
         os.environ['SDL_VIDEO_CENTERED'] = '1'
         pygame.display.set_caption(self.NAME)
 
-        return pygame.display.set_mode(self.SCREEN_SIZE, DOUBLEBUF | VIDEORESIZE)
+        return pygame.display.set_mode(self.SCREEN_SIZE, self.VIDEO_OPTION)
 
 
 __all__ = ['FocusSelector', 'FPSIndicator', 'Separator', 'Windows']

@@ -5,3 +5,4 @@ from .font import *
 from .vracabulous import *
 from .draw import *
 from .math import *
+from .geo import *
