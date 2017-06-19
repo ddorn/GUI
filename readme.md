@@ -1,4 +1,6 @@
-[![Build Status](https://semaphoreci.com/api/v1/ddorn/gui/branches/master/shields_badge.svg)](https://semaphoreci.com/ddorn/gui)
+[![Build Status](https://travis-ci.org/ddorn/GUI.svg?branch=release)](https://travis-ci.org/ddorn/GUI) (release)
+
+[![Build Status](https://travis-ci.org/ddorn/GUI.svg?branch=dev)](https://travis-ci.org/ddorn/GUI) (tests)
 
 # Pygame GUI
 
