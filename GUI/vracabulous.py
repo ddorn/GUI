@@ -4,7 +4,7 @@ import pygame
 from pygame.locals import *
 from collections import defaultdict
 
-from GUI.locals import FLASH_CREEN, MIDNIGHT_BLUE
+from GUI.locals import FLASH_CREEN, MIDNIGHT_BLUE, TOPLEFT
 from GUI.text import SimpleText
 
 
@@ -17,7 +17,7 @@ class FPSIndicator(SimpleText):
         def text():
             return str(round(self.clock.get_fps()))
 
-        super().__init__(text, (10, 14), FLASH_CREEN, MIDNIGHT_BLUE)
+        super().__init__(text, (0, 0), FLASH_CREEN, MIDNIGHT_BLUE, anchor=TOPLEFT)
 
     def render(self, display):
         pygame.draw.rect(display, MIDNIGHT_BLUE, ((0, 0), (20, 28)))
