@@ -1,10 +1,10 @@
 [![Build Status](https://travis-ci.org/ddorn/GUI.svg?branch=release)](https://travis-ci.org/ddorn/GUI)
-[![Build Status](https://img.shields.io/pypi/v/PygameGUILib.svg)](https://pypi.python.org/pypi/PygameGUILib)
-[![Build Status](https://img.shields.io/pypi/status/PygameGUILib.svg)](https://pypi.python.org/pypi/PygameGUILib)
-[![Build Status](https://img.shields.io/pypi/pyversions/PygameGUILib.svg)](https://pypi.python.org/pypi/PygameGUILib)
+[![Pypi Version](https://img.shields.io/pypi/v/PygameGUILib.svg)](https://pypi.python.org/pypi/PygameGUILib)
+[![Status](https://img.shields.io/pypi/status/PygameGUILib.svg)](https://pypi.python.org/pypi/PygameGUILib)
+[![Python Versions](https://img.shields.io/pypi/pyversions/PygameGUILib.svg)](https://pypi.python.org/pypi/PygameGUILib)
 
 [![Code Health](https://landscape.io/github/ddorn/GUI/master/landscape.svg?style=flat)](https://landscape.io/github/ddorn/GUI/master)
-[![Build Status](https://img.shields.io/pypi/dw/PygameGUILib.svg)](https://pypi.python.org/pypi/PygameGUILib)
+[![Downloads](https://img.shields.io/pypi/dw/PygameGUILib.svg)](https://pypi.python.org/pypi/PygameGUILib)
 
 
 # Pygame GUI
