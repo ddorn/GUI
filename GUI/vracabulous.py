@@ -259,7 +259,7 @@ class Windows:
 
     def new_screen(self):
         """ Makes a new screen with a size of SCREEN_SIZE, and VIDEO_OPTION as flags. Sets the windows name to NAME """
-        
+
         os.environ['SDL_VIDEO_CENTERED'] = '1'
         pygame.display.set_caption(self.NAME)
 
