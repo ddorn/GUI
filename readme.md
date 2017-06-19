@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/ddorn/GUI.svg?branch=master)](https://travis-ci.org/ddorn/GUI) 
+[![Build Status](https://travis-ci.org/ddorn/GUI.svg?branch=release)](https://travis-ci.org/ddorn/GUI)
 [![Build Status](https://img.shields.io/pypi/v/PygameGUILib.svg)](https://pypi.python.org/pypi/PygameGUILib)
 [![Build Status](https://img.shields.io/pypi/status/PygameGUILib.svg)](https://pypi.python.org/pypi/PygameGUILib)
 [![Build Status](https://img.shields.io/pypi/pyversions/PygameGUILib.svg)](https://pypi.python.org/pypi/PygameGUILib)
