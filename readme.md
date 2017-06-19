@@ -1,6 +1,11 @@
-[![Build Status](https://travis-ci.org/ddorn/GUI.svg?branch=release)](https://travis-ci.org/ddorn/GUI) (release)
+[![Build Status](https://travis-ci.org/ddorn/GUI.svg?branch=release)](https://travis-ci.org/ddorn/GUI)
+[![Build Status](https://img.shields.io/pypi/v/PygameGUILib.svg)](https://pypi.python.org/pypi/PygameGUILib)
+[![Build Status](https://img.shields.io/pypi/status/PygameGUILib.svg)](https://pypi.python.org/pypi/PygameGUILib)
+[![Build Status](https://img.shields.io/pypi/pyversions/PygameGUILib.svg)](https://pypi.python.org/pypi/PygameGUILib)
 
-[![Build Status](https://travis-ci.org/ddorn/GUI.svg?branch=dev)](https://travis-ci.org/ddorn/GUI) (tests)
+[![Code Health](https://landscape.io/github/ddorn/GUI/master/landscape.svg?style=flat)](https://landscape.io/github/ddorn/GUI/master)
+[![Build Status](https://img.shields.io/pypi/dw/PygameGUILib.svg)](https://pypi.python.org/pypi/PygameGUILib)
+
 
 # Pygame GUI
 
@@ -15,9 +20,13 @@
             (`latex` and `dvipng` accessible in path)
 
 ### Installation
- You can clone this repository in your project or just run
+ You can install it with pip and pypi easily by :
         
-    pip install -U git+https://github.com/ddorn/GUI.git@master#egg=GUI    
+    pip install -U PygameGUILib
+    
+ or via git and pip : 
+ 
+    pip install -U git+https://github.com/ddorn/GUI.git@release#egg=GUI    
 
 ### Use
 
