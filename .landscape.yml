@@ -1,13 +1,14 @@
 strictness: high
-pyton target: 3
+python target: 3
 pep8:
   full: true
 pylint:
   disable:
     - unused-wildcard-import  # W0614: from X import * --> foo not used
+    - too-many-function-args
 pyflakes:
   disable:
     - F401
 doc-warnings: true
-test-warnings: true
+test-warnings: false
 max-line-length: 100

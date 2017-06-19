@@ -43,8 +43,7 @@ def gui():
         # Input loop
         # #######
 
-        mouse = pygame.mouse.get_pos()
-
+        # mouse = pygame.mouse.get_pos()
         for e in pygame.event.get():
             if e.type == QUIT:
                 return 0

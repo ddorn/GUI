@@ -18,7 +18,7 @@ M=
   \end{bmatrix}
 \]
 """, (300, 150), color=RED, font=Font(10))
-    pi = LaText('$$\pi$$', (84, 42), LIGHT_GREY, font=Font(24))  # Too big fonts doesn't works, max is 24
+    pi = LaText(r'$$\pi$$', (84, 42), LIGHT_GREY, font=Font(24))  # Too big fonts doesn't works, max is 24
 
     pi_size = 24
     run = True

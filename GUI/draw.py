@@ -7,12 +7,8 @@ This is a module for easy drawings.
 import pygame
 from pygame import gfxdraw
 
-try:
-    from GUI.locals import BLACK, ROUNDED, FLAT
-    from GUI.math import V2, merge_rects
-except ImportError:
-    from .math import V2, merge_rects
-    from .locals import BLACK, ROUNDED, FLAT
+from GUI.math import V2, merge_rects
+from GUI.locals import BLACK, ROUNDED, FLAT
 
 
 def line(surf, start, end, color=BLACK, width=1, style=FLAT):
@@ -93,7 +89,7 @@ def ring(surf, xy, r, width, color):
             x -= 1
             err -= 2 * x + 1
 
-    def line(surf, color, x, y, right):
+    def h_fill_the_circle(surf, color, x, y, right):
         if -r2 <= y <= r2:
             pygame.draw.line(surf, color, (x0 + right[y], y0 + y), (x0 + x, y0 + y))
             pygame.draw.line(surf, color, (x0 - right[y], y0 + y), (x0 - x, y0 + y))
@@ -106,10 +102,10 @@ def ring(surf, xy, r, width, color):
 
     while x >= y:
 
-        line(surf, color, x, y, right)
-        line(surf, color, x, -y, right)
-        line(surf, color, y, x, right)
-        line(surf, color, y, -x, right)
+        h_fill_the_circle(surf, color, x, y, right)
+        h_fill_the_circle(surf, color, x, -y, right)
+        h_fill_the_circle(surf, color, y, x, right)
+        h_fill_the_circle(surf, color, y, -x, right)
 
         y += 1
         if (err < 0):
