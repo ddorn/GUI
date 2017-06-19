@@ -1,6 +1,9 @@
 language: python
 python:
   - '3.6'
+  - '3.5'
+  - '3.4'
+  - '3.3'
 
 install:
   - pip install pygame
@@ -14,7 +17,9 @@ deploy:
     secure: TD7M7X7wxcausIHQxHQrYj77Ab18eZmy70kvdoo0B/GhsryFiLmg5FS9XKfqEXUE4+ZY/lFxl/2DQ3Ns/U3lGbcdHY1oQEpyvZlqYOhVDp+b7WTfo7VMOjjduFiPZgTOFrbw1YP5GNtZa1dcEtqOeDrwfo5tWZJRYD4zOFBB0tHb63XFz2A/IsCCZBc43JSAHSpcQ07xSGPc0CRQjDCmMn18iOoj14mupRgpAIKl6T++smLyOYYW5tm69sMnjM91XKXgObICfXtJO10xRMTjGqWscGdC7Qz/w5tar3LRdchXIvWWmsWn13wOaYwY9efL9ZsFQYHDatsF9U1OMKIjCCTzQn9QWJn1lxQK8HgS1AhyCZcu/aDEF/kmyIXkh81cmf3yibydLYV4QMq+8vFnZj0RloAiHO6ovwEveaLFRW7zA4f8P47NCrgAYiJrdKX2UyWAHqCknWuFFVcqFIHr6UwT9/f4cDnWO0i/TgLQlWPxmEL7crR8Tuolq4XNt59ExX6VdiIaIKXhchqx5WnZ/KokAKeywVhoel49dthupvKRSNtmexueSxe85hBDhQR70HRmptWjeFYhOCj1QeSyMoANJBxjkTjRiwaj9x/5jhI71Xu3zu+70C0Lb6+7zw4cPK/yoHwg9blhRUg3/deK8/IVBPkgwBE7VpYoPgOVAXc=
   on:
     branch: release
+    condition: $TRAVIS_PYTHON_VERSION = "3.6"
   skip_upload_docs: true # TODO : docs
+  clean_up: false
 
 notifications:
   slack:
