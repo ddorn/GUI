@@ -4,7 +4,7 @@
 
 import pygame
 
-from GUI.locals import CENTER
+from GUI.locals import CENTER, TOPLEFT, TOPRIGHT, MIDTOP, MIDLEFT, MIDRIGHT, BOTTOMRIGHT, MIDBOTTOM, BOTTOMLEFT
 from pygame.event import EventType
 
 
