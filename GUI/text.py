@@ -88,6 +88,12 @@ class SimpleText(BaseWidget):
             self._bg_color = value
             self._render()
 
+    def set_font_size(self, pt=None, px=None):
+        """Set the font size to the desired size, in pt or px."""
+        self.font.set_size(pt, px)
+
+        self._render()
+
     def _render(self):
         """
         Render the text.
@@ -103,8 +109,7 @@ class SimpleText(BaseWidget):
         self.size = rect.size
 
     def render(self, display):
-        """Render basicly the text"""
-
+        """Render basicly the text."""
         # to handle changing objects / callable
         if self.text != self._last_text:
             self._render()

@@ -34,8 +34,10 @@ M=
             if e.type == pygame.MOUSEBUTTONDOWN:
                 if e.button == 4:
                     pi_size = max(pi_size - 1, 1)
-                if e.button == 5:
+                elif e.button == 5:
                     pi_size += 1
+
+                normal_text.set_font_size(px=pi_size)
                 pi.font.font_size = pi_size
                 pi.text = pi_size
 
