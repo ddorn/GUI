@@ -2,7 +2,9 @@
 
 """
 The very bases of the GUI module.
+
 Defines :BaseWidget:, the base class for any widget.
+To create any new widget, you must extend BaseWidget.
 """
 
 import pygame
@@ -22,6 +24,8 @@ class BaseWidget(pygame.Rect):
     def __init__(self, pos, size, anchor=CENTER):
         """
         Creates a Basic Widget with... nothing
+
+        The pos, size and anchor can be tuples or funcions that returns a tuple (an anchostr for the anchor)
         """
         super().__init__((0, 0), (0, 0))
 
@@ -39,7 +43,6 @@ class BaseWidget(pygame.Rect):
 
     def __contains__(self, item):
         """Test if a point is in the widget"""
-
         return self.left <= item[0] <= self.right and self.top <= item[1] <= self.bottom
 
     def __getattribute__(self, item):
