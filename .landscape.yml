@@ -1,11 +1,13 @@
 strictness: high
-python target: 3
+python targets: 3
 pep8:
   full: true
 pylint:
   disable:
     - unused-wildcard-import  # W0614: from X import * --> foo not used
+    - wildcard-import
     - too-many-function-args
+    - invalid-name
 pyflakes:
   disable:
     - F401

@@ -1,4 +1,8 @@
 # coding=utf-8
+
+"""
+A module with a lot of helping functions
+"""
 import os
 import pygame
 from pygame.locals import *
@@ -10,7 +14,7 @@ from GUI.text import SimpleText
 
 
 class FPSIndicator(SimpleText):
-    """ A small text on the top right corner of the screen shoing the fps """
+    """A small text on the top right corner of the screen shoing the fps"""
 
     def __init__(self, clock):
         self.clock = clock
@@ -28,7 +32,7 @@ class FPSIndicator(SimpleText):
 
 
 class FocusSelector:
-    """ A tool to navigate between many objects easily """
+    """A tool to navigate between many objects easily"""
 
     def __init__(self, *items):
         assert len(items) > 0
@@ -50,17 +54,17 @@ class FocusSelector:
         return len(self.items)
 
     def next(self):
-        """ Selects the next item """
+        """Selects the next item"""
 
         self.select(self._selected + 1)
 
     def prev(self):
-        """ Selects the previous item """
+        """Selects the previous item"""
 
         self.select(self._selected - 1)
 
     def select(self, item):
-        """ Select an arbitrary item, by possition or by reference """
+        """Select an arbitrary item, by possition or by reference"""
 
         self._on_unselect[self._selected]()
         self.selected().unfocus()
@@ -74,16 +78,16 @@ class FocusSelector:
         self._on_select[self._selected]()
 
     def selected(self):
-        """ Returns the curently focused object """
+        """Returns the curently focused object"""
 
         return self.items[self._selected]
 
     def selected_index(self):
-        """ The index of the selected item in the item list """
+        """The index of the selected item in the item list"""
         return self._selected
 
     def is_selected(self, item):
-        """ True is the object is focused """
+        """True is the object is focused"""
 
         return self.items.index(item) == self._selected
 
@@ -99,7 +103,7 @@ class FocusSelector:
         self._on_select[item] = action
 
     def on_unselect(self, item, action):
-        """ Adds an action to make when an object is unfocused """
+        """Adds an action to make when an object is unfocused"""
 
         if not isinstance(item, int):
             item = self.items.index(item)
@@ -210,7 +214,7 @@ class Windows:
         self.fps = FPSIndicator(self.clock)
 
     def update_on_event(self, e):
-        """ Deals with a single event """
+        """Deals with a single event"""
         if e.type == QUIT:
             self.running = False
 
@@ -226,29 +230,29 @@ class Windows:
             self.screen = self.new_screen()
 
     def update(self):
-        """ Gets all events and deal with then by calling update_on_event() """
+        """Gets all events and deal with then by calling update_on_event()"""
 
         for e in pygame.event.get():
             self.update_on_event(e)
 
     def render(self):
-        """ Renders the screen. Here you must draw everything """
+        """Renders the screen. Here you must draw everything"""
 
         self.screen.fill(WHITE)
         self.fps.render(self.screen)
 
     def update_screen(self):
-        """ Refreshes the screen. You don't need to override this except to update only small portins of the screen """
+        """Refreshes the screen. You don't need to override this except to update only small portins of the screen"""
 
         self.clock.tick(self.FPS)
         pygame.display.update()
 
     def destroy(self):
-        """ Clean what is needed at the end and returns what run() returns """
+        """Clean what is needed at the end and returns what run() returns"""
         pass
 
     def run(self):
-        """ The run loop. Returns self.destroy() """
+        """The run loop. Returns self.destroy()"""
 
         while self.running:
             self.update()
@@ -258,7 +262,7 @@ class Windows:
         return self.destroy()
 
     def new_screen(self):
-        """ Makes a new screen with a size of SCREEN_SIZE, and VIDEO_OPTION as flags. Sets the windows name to NAME """
+        """Makes a new screen with a size of SCREEN_SIZE, and VIDEO_OPTION as flags. Sets the windows name to NAME"""
 
         os.environ['SDL_VIDEO_CENTERED'] = '1'
         pygame.display.set_caption(self.NAME)

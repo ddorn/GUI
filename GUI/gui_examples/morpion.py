@@ -183,7 +183,7 @@ def pos_from_mouse(mouse):
 
 
 def gui():
-    """ Main function """
+    """Main function"""
 
     # #######
     # setup all objects

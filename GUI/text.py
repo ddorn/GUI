@@ -21,7 +21,7 @@ pygame.font.init()
 
 
 class SimpleText(BaseWidget):
-    """ A simple brut text to draw on the screen """
+    """A simple brut text to draw on the screen"""
 
     def __init__(self, text, pos, color=BLUE, bg_color=None, font=DEFAULT, anchor='center'):
         """
@@ -55,7 +55,7 @@ class SimpleText(BaseWidget):
 
     @property
     def text(self):
-        """ Returns the string to render """
+        """Returns the string to render"""
 
         if callable(self._text):
             return str(self._text())
@@ -63,12 +63,13 @@ class SimpleText(BaseWidget):
 
     @text.setter
     def text(self, value):
-        """ Sets the text to a new string or callable. """
+        """Sets the text to a new string or callable."""
 
         self._text = value
 
     @property
     def color(self):
+        """The color of the text"""
         return self._color
 
     @property
@@ -77,7 +78,7 @@ class SimpleText(BaseWidget):
 
     @color.setter
     def color(self, value):
-        """ Sets the color to a new value (tuple). Renders the text if needed. """
+        """Sets the color to a new value (tuple). Renders the text if needed."""
 
         if value != self.color:
             self._color = value
@@ -85,15 +86,17 @@ class SimpleText(BaseWidget):
 
     @bg_color.setter
     def bg_color(self, value):
-        """ Sets the color to a new value (tuple). Renders the text if needed. """
+        """Sets the color to a new value (tuple). Renders the text if needed."""
 
         if value != self.bg_color:
             self._bg_color = value
             self._render()
 
     def _render(self):
-        """ Render the text.
-            Avoid using this fonction too many time as it is slow as it is low to render text and blit it. """
+        """
+        Render the text.
+        Avoid using this fonction too many time as it is slow as it is low to render text and blit it.
+        """
 
         self._last_text = self.text
 
@@ -103,7 +106,7 @@ class SimpleText(BaseWidget):
         self.size = rect.size
 
     def render(self, display):
-        """ Render basicly the text """
+        """Render basicly the text"""
 
         # to handle changing objects / callable
         if self.text != self._last_text:
@@ -113,7 +116,8 @@ class SimpleText(BaseWidget):
 
 
 class InLineTextBox(SimpleText):
-    """ A textbox with scrolling in one line """
+
+    """A textbox with scrolling in one line"""
 
     RIGHT = 1
     LEFT = -1
@@ -143,7 +147,7 @@ class InLineTextBox(SimpleText):
 
     @property
     def cursor(self):
-        """ The position of the cursor in the text """
+        """The position of the cursor in the text"""
 
         if self._cursor < 0:
             self.cursor = 0
@@ -163,7 +167,7 @@ class InLineTextBox(SimpleText):
             self._cursor = value
 
     def cursor_pos(self):
-        """ The cursor position in pixels """
+        """The cursor position in pixels"""
 
         if len(self) == 0:
             return self.left + self.default_text.get_width()
@@ -177,7 +181,8 @@ class InLineTextBox(SimpleText):
         return self.left + self.font.size(self.text[:self.cursor])[0] - shift
 
     def move_cursor_one_letter(self, letter=RIGHT):
-        """ Moves the cursor of one letter to the right (1) or the the left"""
+        """Moves the cursor of one letter to the right (1) or the the left"""
+
         assert letter in (self.RIGHT, self.LEFT)
 
         if letter == self.RIGHT:
@@ -190,6 +195,8 @@ class InLineTextBox(SimpleText):
                 self.cursor += 1
 
     def move_cursor_one_word(self, word=LEFT):
+        """Moves the cursor of one word to the right (1) or the the left (-1)"""
+
         assert word in (self.RIGHT, self.LEFT)
 
         if word == self.RIGHT:
@@ -204,6 +211,8 @@ class InLineTextBox(SimpleText):
             self.cursor = papy
 
     def delete_one_letter(self, letter=RIGHT):
+        """Delete one letter the right or the the left of the cursor"""
+
         assert letter in (self.RIGHT, self.LEFT)
 
         if letter == self.LEFT:
@@ -215,6 +224,8 @@ class InLineTextBox(SimpleText):
             self.text = self.text[:self.cursor] + self.text[self.cursor + 1:]
 
     def delete_one_word(self, word=RIGHT):
+        """Delete one word the right or the the left of the cursor"""
+
         assert word in (self.RIGHT, self.LEFT)
 
         if word == self.RIGHT:
@@ -231,6 +242,7 @@ class InLineTextBox(SimpleText):
             self.cursor = papy
 
     def add_letter(self, letter):
+        """Adds a letter at the cursor pos"""
         assert isinstance(letter, str)
         assert len(letter) == 1
 
@@ -238,7 +250,7 @@ class InLineTextBox(SimpleText):
         self.cursor += 1
 
     def update(self, event_or_list):
-        """ Updates the text and position of cursor according to the event passed """
+        """Updates the text and position of cursor according to the event passed"""
 
         event_or_list = super().update(event_or_list)
 
@@ -274,8 +286,10 @@ class InLineTextBox(SimpleText):
                 self.add_letter(e.unicode)
 
     def _render(self):
-        """ Render the text.
-            Avoid using this fonction too many times as it is slow as it is slow to render text and blit it. """
+        """
+        Render the text.
+        Avoid using this fonction too many times as it is slow as it is slow to render text and blit it.
+        """
 
         self._last_text = self.text
 
@@ -284,7 +298,7 @@ class InLineTextBox(SimpleText):
         self.size = size
 
     def render(self, display):
-        """ Render basicly the text """
+        """Render basicly the text"""
 
         # to handle changing objects / callable
         if self.text != self._last_text:
@@ -306,7 +320,7 @@ class InLineTextBox(SimpleText):
 
 
 class InLinePassBox(InLineTextBox):
-    """ TextBow that doesn't show the text but other thing or some dots """
+    """TextBow that doesn't show the text but other thing or some dots"""
 
     STRANGE = 42
     DOTS = 69
@@ -327,7 +341,7 @@ class InLinePassBox(InLineTextBox):
 
     @property
     def shawn_text(self):
-        """ The text displayed instead of the real one """
+        """The text displayed instead of the real one"""
 
         if len(self._shawn_text) == len(self):
             return self._shawn_text
@@ -353,7 +367,7 @@ class InLinePassBox(InLineTextBox):
         return s
 
     def cursor_pos(self):
-        """ The cursor position in pixels """
+        """The cursor position in pixels"""
         if len(self) == 0:
             return self.left + self.default_text.get_width()
 
@@ -366,8 +380,10 @@ class InLinePassBox(InLineTextBox):
         return self.left + self.font.size(self.shawn_text[:self.cursor])[0] - shift
 
     def _render(self):
-        """ Render the text.
-            Avoid using this fonction too many times as it is slow as it is slow to render text and blit it. """
+        """
+        Render the text.
+        Avoid using this fonction too many times as it is slow as it is slow to render text and blit it.
+        """
 
         self._last_text = self.shawn_text
 
@@ -376,7 +392,7 @@ class InLinePassBox(InLineTextBox):
         self.size = size
 
     def render(self, display):
-        """ Render basicly the text """
+        """Render basicly the text"""
 
         # to handle changing objects / callable
         if self.shawn_text != self._last_text:
@@ -397,7 +413,7 @@ class InLinePassBox(InLineTextBox):
 
 
 class LaText(SimpleText):
-    """ This class provides a nice rendering for maths equations based on latex. """
+    """This class provides a nice rendering for maths equations based on latex."""
 
     def __init__(self, text, pos, color=BLUE, bg_color=None, font=DEFAULT, anchor='center'):
         """
@@ -419,6 +435,7 @@ class LaText(SimpleText):
 
     @staticmethod
     def latex_to_img(tex):
+        """Convert a latex template to a png"""
         with tempfile.TemporaryDirectory() as tmpdirname:
             with open(tmpdirname + r'\tex.tex', 'w') as f:
                 f.write(tex)

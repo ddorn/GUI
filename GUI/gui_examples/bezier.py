@@ -11,7 +11,7 @@ FPS = 40
 
 
 def gui():
-    """ Main function """
+    """Main function"""
 
     # #######
     # setup all objects

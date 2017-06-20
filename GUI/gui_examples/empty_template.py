@@ -21,7 +21,7 @@ def new_screen():
 
 
 def gui():
-    """ Main function """
+    """Main function"""
 
     global SCREEN_SIZE
 

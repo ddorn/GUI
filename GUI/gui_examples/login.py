@@ -21,7 +21,7 @@ def new_widow():
 
 
 def gui():
-    """ Main function """
+    """Main function"""
 
     global SCREEN_SIZE
 
