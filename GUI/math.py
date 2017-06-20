@@ -1,4 +1,7 @@
 # coding=utf-8
+
+"""A module with math functions and a vector class (V2)."""
+
 from math import sqrt
 
 import pygame

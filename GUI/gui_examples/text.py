@@ -1,3 +1,7 @@
+# coding=utf-8
+
+"""A use example of texts."""
+
 import pygame
 
 from GUI import SimpleText, LaText, Font

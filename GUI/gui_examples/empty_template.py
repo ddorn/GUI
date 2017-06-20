@@ -1,3 +1,5 @@
+"""An empty template to quickly start a new project."""
+
 # coding=utf-8
 
 import os

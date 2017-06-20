@@ -1,3 +1,7 @@
+# coding=utf-8
+
+"""This module provides easy to use fonts."""
+
 from pygame import font
 
 from GUI.locals import GUI_PATH
@@ -6,7 +10,7 @@ font.init()
 
 
 class Font(font.Font):
-    """A pygame.font.Font font, with no aditionnal methodes but provide a good default behavior."""
+    """A pygame.font.Font font, with no aditionnal methods but provide a good default behavior."""
 
     def __init__(self, size=20, file=GUI_PATH + '/segoeuil.ttf'):
         """

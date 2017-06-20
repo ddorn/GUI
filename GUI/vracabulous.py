@@ -10,7 +10,7 @@ import pygame
 from pygame.locals import *
 from collections import defaultdict
 
-from GUI.locals import FLASH_CREEN, MIDNIGHT_BLUE, TOPLEFT, WHITE
+from GUI.locals import FLASH_GREEN, MIDNIGHT_BLUE, TOPLEFT, WHITE
 from GUI.text import SimpleText
 
 
@@ -24,7 +24,7 @@ class FPSIndicator(SimpleText):
         """
         self.clock = clock
 
-        super().__init__(self.get_fps_text, (0, 0), FLASH_CREEN, MIDNIGHT_BLUE, anchor=TOPLEFT)
+        super().__init__(self.get_fps_text, (0, 0), FLASH_GREEN, MIDNIGHT_BLUE, anchor=TOPLEFT)
 
     def get_fps_text(self):
         """Retruna string representing the fps."""

@@ -1,4 +1,7 @@
 # coding=utf-8
+
+"""A morpion, to demonstaret the use of PygameGUILib."""
+
 import os
 import pygame
 from pygame.constants import *

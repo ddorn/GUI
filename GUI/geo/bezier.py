@@ -1,3 +1,7 @@
+# coding=utf-8
+
+"""This module provide a Bezier curve."""
+
 import pygame
 from pygame import gfxdraw
 

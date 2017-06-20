@@ -1,3 +1,6 @@
+# coding=utf-8
+
+"""A use example of Bezier()."""
 import pygame
 from pygame.constants import *
 from random import choice

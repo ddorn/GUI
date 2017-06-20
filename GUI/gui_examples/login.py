@@ -1,5 +1,7 @@
 # coding=utf-8
 
+"""An example of a login interface, to show the usage of the PygameGUILib."""
+
 import os
 import pygame
 from pygame.locals import *

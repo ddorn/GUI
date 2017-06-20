@@ -135,23 +135,23 @@ class BaseWidget(pygame.Rect):
         self._anchor = value
 
     def focus(self):
-        """Gives the focus to the widget"""
+        """Gives the focus to the widget."""
         self._focus = True
 
     def unfocus(self):
-        """ Takes back the focus from the widget """
+        """Takes back the focus from the widget."""
         self._focus = False
 
     def click(self):
-        """Makes the widget clicked"""
+        """Makes the widget clicked."""
         self.clicked = True
 
     def release(self):
-        """Unclick the widget"""
+        """Unclick the widget."""
         self.clicked = False
 
     def get_focus(self):
-        """Returns the current focus state"""
+        """Returns the current focus state."""
         return self._focus
 
     def update(self, event_or_list):

@@ -1,3 +1,7 @@
+# coding=utf-8
+
+"""This module provides functions to manipulate colors"""
+
 from GUI.locals import WHITE, BLACK
     
     

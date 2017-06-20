@@ -1,3 +1,7 @@
+# coding=utf-8
+
+"""An use example of buttons."""
+
 import pygame
 
 from GUI import SlideBar, Button

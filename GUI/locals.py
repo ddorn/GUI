@@ -1,3 +1,4 @@
+"""A lot of constants for everyday life: colors, anchors..."""
 import os
 
 GUI_PATH = os.path.dirname(__file__)
@@ -14,7 +15,7 @@ ORANGE = (230, 140, 30)
 GREY = (128, 128, 128)
 LIGHT_GREY = (192, 192, 192)
 PINK = (255, 51, 153)
-FLASH_CREEN = (153, 255, 0)
+FLASH_GREEN = (153, 255, 0)
 
 # from https://flatuicolors.com/ :D
 TURQUOISE = (26, 188, 156)
@@ -30,7 +31,7 @@ COLORS = [
     BLUE, TRUE_BLUE, TURQUOISE, NICE_BLUE, MIDNIGHT_BLUE,
     PURPLE,
     RED, PINK,
-    GREEN, DK_GREEN, FLASH_CREEN,
+    GREEN, DK_GREEN, FLASH_GREEN,
     ORANGE, YELLOW, PUMPKIN
 ]
 
@@ -52,4 +53,4 @@ FLAT = 'flat'
 __all__ = ['BLACK', 'WHITE', 'BLUE', 'NICE_BLUE', 'TRUE_BLUE', 'GUI_PATH', 'PURPLE', 'GREEN', 'RED', 'DK_GREEN', 'ORANGE',
            'GREY', 'LIGHT_GREY', 'CENTER', 'TOPLEFT', 'BOTTOMLEFT', 'TOPRIGHT', 'MIDTOP', 'MIDRIGHT', 'MIDLEFT',
            'MIDBOTTOM', 'BOTTOMRIGHT', 'PINK', 'COLORS', 'YELLOW', 'TURQUOISE', 'ROUNDED', 'FLAT', 'CONCRETE',
-           'PUMPKIN', 'FLASH_CREEN', 'MIDNIGHT_BLUE']
+           'PUMPKIN', 'FLASH_GREEN', 'MIDNIGHT_BLUE']
