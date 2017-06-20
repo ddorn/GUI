@@ -7,7 +7,7 @@ from _thread import start_new_thread
 from time import time, sleep
 
 from GUI.locals import GREEN, CENTER, BLUE, LIGHT_GREY
-from GUI.font import DEFAULT, Font
+from GUI.font import DEFAULT_FONT, Font
 from GUI.draw import circle
 from GUI.text import SimpleText
 from GUI.base import BaseWidget
@@ -90,7 +90,7 @@ class Button(BaseButton):
 
         text_color = bw_contrasted(color)
 
-        text_surf = DEFAULT.render(self.text, True, text_color, color)
+        text_surf = DEFAULT_FONT.render(self.text, True, text_color, color)
         text_rect = text_surf.get_rect()
         text_rect.center = self.center
 

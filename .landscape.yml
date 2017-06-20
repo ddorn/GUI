@@ -1,5 +1,5 @@
 strictness: high
-python targets: 3
+python-targets: 3
 pep8:
   full: true
 pylint:

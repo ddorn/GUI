@@ -20,6 +20,6 @@ class Font(font.Font):
         self.font_name = file
 
 
-DEFAULT = Font(20)
+DEFAULT_FONT = Font(20)
 
-__all__ = ['Font', 'DEFAULT']
+__all__ = ['Font', 'DEFAULT_FONT']

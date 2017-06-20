@@ -6,15 +6,13 @@ A module to easily render text on the screen.
 import os
 import pygame
 import tempfile
-from pygame.locals import *
 from random import randint
+from pygame.locals import *
 
-from pygame.event import EventType
-
-from GUI.draw import line
 
 from GUI.locals import *
-from GUI.font import DEFAULT
+from GUI.draw import line
+from GUI.font import DEFAULT_FONT
 from GUI.base import BaseWidget
 
 pygame.font.init()
@@ -23,7 +21,7 @@ pygame.font.init()
 class SimpleText(BaseWidget):
     """A simple brut text to draw on the screen"""
 
-    def __init__(self, text, pos, color=BLUE, bg_color=None, font=DEFAULT, anchor='center'):
+    def __init__(self, text, pos, color=BLUE, bg_color=None, font=DEFAULT_FONT, anchor='center'):
         """
         Creates a new SimpleText object.
         
@@ -122,7 +120,7 @@ class InLineTextBox(SimpleText):
     RIGHT = 1
     LEFT = -1
 
-    def __init__(self, pos, size, color=BLUE, bg_color=None, font=DEFAULT, anchor='center', default_text=''):
+    def __init__(self, pos, size, color=BLUE, bg_color=None, font=DEFAULT_FONT, anchor='center', default_text=''):
         """
         Creates a new InLineTextBox object.
 
@@ -325,7 +323,7 @@ class InLinePassBox(InLineTextBox):
     STRANGE = 42
     DOTS = 69
 
-    def __init__(self, pos, size, color=BLUE, bg_color=None, font=DEFAULT, anchor='center', default_text='',
+    def __init__(self, pos, size, color=BLUE, bg_color=None, font=DEFAULT_FONT, anchor='center', default_text='',
                  style=DOTS):
         """
         TextBow that doesn't show the text but other thing or some dots
@@ -415,7 +413,7 @@ class InLinePassBox(InLineTextBox):
 class LaText(SimpleText):
     """This class provides a nice rendering for maths equations based on latex."""
 
-    def __init__(self, text, pos, color=BLUE, bg_color=None, font=DEFAULT, anchor='center'):
+    def __init__(self, text, pos, color=BLUE, bg_color=None, font=DEFAULT_FONT, anchor='center'):
         """
         The latex _interface_ provides a well looking display of math exquations.
         

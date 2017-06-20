@@ -1,6 +1,7 @@
 import pygame
 
-from GUI import SlideBar, RED, Button, BOTTOMRIGHT, WHITE
+from GUI import SlideBar, Button
+from GUI.locals import RED, BOTTOMRIGHT, WHITE
 
 
 def gui():

@@ -2,6 +2,7 @@
 
 """
 This is a module for easy drawings.
+Every function provides anti-aliased shapes.
 """
 
 import pygame

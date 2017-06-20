@@ -2,9 +2,9 @@
 
 import os
 import pygame
-from pygame.locals import *
+from pygame.constants import *
 
-from GUI import *
+from GUI import FPSIndicator
 from GUI.locals import *
 
 pygame.init()

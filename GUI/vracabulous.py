@@ -8,8 +8,7 @@ import pygame
 from pygame.locals import *
 from collections import defaultdict
 
-from GUI import WHITE
-from GUI.locals import FLASH_CREEN, MIDNIGHT_BLUE, TOPLEFT
+from GUI.locals import FLASH_CREEN, MIDNIGHT_BLUE, TOPLEFT, WHITE
 from GUI.text import SimpleText
 
 
