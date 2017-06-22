@@ -188,12 +188,13 @@ class Windows:
         - the render() to draw your widgets
         Don't forget to call super() on those methods
 
-    class variable to customise the project : FPS, VIDEO_OPTION, SCREEN_SIZE, NAME
+    class variable to customise the project : FPS, VIDEO_OPTION, SCREEN_SIZE, NAME, EVENT_ALLOWED
     """
 
     SCREEN_SIZE = 800, 500
     NAME = 'Empty project'
     VIDEO_OPTIONS = DOUBLEBUF | VIDEORESIZE
+    EVENT_ALLOWED = 0b111111111111111  # all
     FPS = 60
 
     def __init__(self):
@@ -263,7 +264,9 @@ class Windows:
         os.environ['SDL_VIDEO_CENTERED'] = '1'
         pygame.display.set_caption(self.NAME)
 
-        return pygame.display.set_mode(self.SCREEN_SIZE, self.VIDEO_OPTIONS)
+        screen =  pygame.display.set_mode(self.SCREEN_SIZE, self.VIDEO_OPTIONS)
+        pygame.event.set_allowed(self.EVENT_ALLOWED)
 
+        return screen
 
 __all__ = ['FocusSelector', 'FPSIndicator', 'Separator', 'Windows']

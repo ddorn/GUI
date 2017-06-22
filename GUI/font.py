@@ -24,17 +24,32 @@ class Font(font.Font):
     ]
     # MMMMMMMMMH WHAT A BEAUTIFULL WAY TO MAKE CONVERSIONS <3 <3 <3 <3 <3
 
+    POINT = 42
+    PIXEL = 69
 
-    def __init__(self, size=20, file=GUI_PATH + '/segoeuil.ttf'):
+    def __init__(self, size=20, file=GUI_PATH + r'\data\fonts\segoeuil.ttf', unit=POINT):
         """
         Creates a Font object.
         
         :param size: The font size (See http://www.pygame.org/docs/ref/font.html#pygame.font.Font for more infos)
         :param file: The file of the font file
         """
+
+        if unit == self.PIXEL:
+            size = self.px_to_pt(size)
+
         super(Font, self).__init__(file, size)
         self.font_size = size
         self.font_name = file
+
+    def px_to_pt(self, px):
+        """Convert a size in pxel to a size in points."""
+        if px < 200:
+            pt = self.PX_TO_PT[px]
+        else:
+            pt = int(floor((px - 1.21) / 1.332))
+
+        return pt
 
     def set_size(self, pt=None, px=None):
         """
@@ -43,18 +58,18 @@ class Font(font.Font):
         The px method is a bit inacurate, there can be one or two px less, and max 4 for big numbers (like 503)
         but the size is never over-estimated. It makes almost the good value.
         """
+
         assert (pt, px) != (None, None)
 
         if pt is not None:
             self.__init__(pt, self.font_name)
         else:
-            if px < 200:
-                self.__init__(self.PX_TO_PT[px], self.font_name)
+            self.__init__(self.px_to_pt(px), self.font_name)
 
-            else:
-                pt = int(floor((px - 1.21) / 1.332))
-                self.__init__(pt, self.font_name)
 
+class BoldFont(Font):
+    def __init__(self, size, unit=Font.POINT):
+        super(BoldFont, self).__init__(size, GUI_PATH + r'\data\fonts\seguisbi.ttf', unit)
 
 
 DEFAULT_FONT = Font(20)
