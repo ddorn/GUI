@@ -27,7 +27,7 @@ class Font(font.Font):
     POINT = 42
     PIXEL = 69
 
-    def __init__(self, size=20, file=GUI_PATH + r'\data\fonts\segoeuil.ttf', unit=POINT):
+    def __init__(self, size=20, file=GUI_PATH + r'/data/fonts/segoeuil.ttf', unit=POINT):
         """
         Creates a Font object.
         
@@ -69,7 +69,7 @@ class Font(font.Font):
 
 class BoldFont(Font):
     def __init__(self, size, unit=Font.POINT):
-        super(BoldFont, self).__init__(size, GUI_PATH + r'\data\fonts\seguisbi.ttf', unit)
+        super(BoldFont, self).__init__(size, GUI_PATH + r'/data/fonts/seguisbi.ttf', unit)
 
 
 DEFAULT_FONT = Font(20)
