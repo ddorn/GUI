@@ -6,7 +6,6 @@ import os
 from setuptools import setup, find_packages
 
 # To use a consistent encoding
-from codecs import open
 from os import path
 
 here = path.abspath(path.dirname(__file__))
@@ -36,7 +35,7 @@ except (IOError, ImportError):
 
 setup(
     name='PygameGUILib',
-    version='0.4a5',
+    version='0.4a6',
     description='widgets for pygame wit ease',
     long_description=long_description,
     classifiers=[
@@ -50,8 +49,10 @@ setup(
     author_email='diego.dorn@free.fr',
     packages=find_packages(),
     package_data={
-        '.': 'README.*'
+        '.': 'README.*',
+        'data/fonts': ['*']
     },
+    include_package_data=True,
     install_requires=['pygame'],
     setup_requires=['pytest-runner'],
     tests_require=['pytest'],
