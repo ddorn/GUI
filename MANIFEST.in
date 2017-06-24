@@ -1,1 +1,3 @@
-include README.*
+include readme.*
+include requirements.txt
+recursive-include GUI/data *

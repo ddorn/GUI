@@ -55,8 +55,6 @@ class Morpion(object):
         self._hint = None
 
     def is_won(self):
-        if self.won is not None:
-            return self.won
 
         a = b = d1 = d2 = True
         for i in range(3):
@@ -73,9 +71,11 @@ class Morpion(object):
                     b = False
 
             if a:
+                self.won = a
                 return a
 
             if b:
+                self.won = b
                 return b
 
             if d1 and d1 is True or d1 == self.grid[i][i]:
