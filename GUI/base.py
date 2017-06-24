@@ -1,6 +1,11 @@
 # coding=utf-8
 
-""" The very bases of the GUI module """
+"""
+The very bases of the GUI module.
+
+Defines :BaseWidget:, the base class for any widget.
+To create any new widget, you must extend BaseWidget.
+"""
 
 import pygame
 
@@ -19,6 +24,8 @@ class BaseWidget(pygame.Rect):
     def __init__(self, pos, size, anchor=CENTER):
         """
         Creates a Basic Widget with... nothing
+
+        The pos, size and anchor can be tuples or funcions that returns a tuple (an anchostr for the anchor)
         """
         super().__init__((0, 0), (0, 0))
 
@@ -35,10 +42,8 @@ class BaseWidget(pygame.Rect):
         return '<BaseWidget({}, {})>'.format(self.topleft, self.size)
 
     def __contains__(self, item):
-        """ Test if a point is in the widget """
-        x, y = item
-
-        return self.left <= x <= self.right and self.top <= y <= self.bottom
+        """Test if a point is in the widget"""
+        return self.left <= item[0] <= self.right and self.top <= item[1] <= self.bottom
 
     def __getattribute__(self, item):
 
@@ -68,18 +73,18 @@ class BaseWidget(pygame.Rect):
             super(BaseWidget, self).__setattr__(key, value)
 
     def __update(self):
-        """ 
-        This is called each time an attribute is asked, to be sure every params are updated, beceause of callbacks
+        """
+        This is called each time an attribute is asked, to be sure every params are updated, beceause of callbacks.
         """
 
         # I can not set the size attr because it is my property, so I set the width and height separately
-        w, h = self.size
-        super(BaseWidget, self).__setattr__("width", w)
-        super(BaseWidget, self).__setattr__("height", h)
+        width, height = self.size
+        super(BaseWidget, self).__setattr__("width", width)
+        super(BaseWidget, self).__setattr__("height", height)
         super(BaseWidget, self).__setattr__(self.anchor, self.pos)
 
     def as_rect(self):
-        """ Returns the pos and the size of the rect like you can pass to the pygame.Rect constructor or any widget"""
+        """Returns the pos and the size of the rect like you can pass to the pygame.Rect constructor or any widget"""
 
         return self.pos, self.size
 
@@ -130,23 +135,23 @@ class BaseWidget(pygame.Rect):
         self._anchor = value
 
     def focus(self):
-        """ Gives the focus to the widget """
+        """Gives the focus to the widget."""
         self._focus = True
 
     def unfocus(self):
-        """ Takes back the focus from the widget """
+        """Takes back the focus from the widget."""
         self._focus = False
 
     def click(self):
-        """ Makes the widget clicked """
+        """Makes the widget clicked."""
         self.clicked = True
 
     def release(self):
-        """ Unclick the widget """
+        """Unclick the widget."""
         self.clicked = False
 
     def get_focus(self):
-        """ Returns the current focus state """
+        """Returns the current focus state."""
         return self._focus
 
     def update(self, event_or_list):

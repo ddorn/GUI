@@ -7,7 +7,7 @@ from _thread import start_new_thread
 from time import time, sleep
 
 from GUI.locals import GREEN, CENTER, BLUE, LIGHT_GREY
-from GUI.font import DEFAULT, Font
+from GUI.font import DEFAULT_FONT, Font
 from GUI.draw import circle
 from GUI.text import SimpleText
 from GUI.base import BaseWidget
@@ -15,7 +15,8 @@ from GUI.colors import bw_contrasted
 
 
 class BaseButton(BaseWidget):
-    """ Abstract base class for any button """
+
+    """Abstract base class for any button"""
 
     def __init__(self, func, pos, size, anchor):
         """
@@ -54,7 +55,8 @@ class BaseButton(BaseWidget):
 
 
 class Button(BaseButton):
-    """ A basic button. """
+
+    """A basic button."""
 
     def __init__(self, func, pos, size, text='', color=GREEN, color_pressed=None, anchor=CENTER):
         """
@@ -75,8 +77,7 @@ class Button(BaseButton):
         self.color = color
 
         if color_pressed is None:
-            x, y, z = color
-            color_pressed = x // 2, y // 2, z // 2
+            color_pressed = color[0] // 2, color[1] // 2, color[2] // 2
         self.color_pressed = color_pressed
 
     def render(self, display):
@@ -89,7 +90,7 @@ class Button(BaseButton):
 
         text_color = bw_contrasted(color)
 
-        text_surf = DEFAULT.render(self.text, True, text_color, color)
+        text_surf = DEFAULT_FONT.render(self.text, True, text_color, color)
         text_rect = text_surf.get_rect()
         text_rect.center = self.center
 
@@ -97,7 +98,7 @@ class Button(BaseButton):
 
 
 class IconButton(BaseButton):
-    """ A button with a **square** icon intead of a text. """
+    """A button with a **square** icon intead of a text."""
 
     def __init__(self, func, pos, size: int, icon_path, anchor=CENTER):
         """
@@ -115,22 +116,27 @@ class IconButton(BaseButton):
 
         icon = pygame.image.load(icon_path)
         icon = pygame.transform.smoothscale(icon, self.size)
-        icon_pressed = icon.copy()
+
+        self.icon = icon
+        self.icon_pressed = self.get_darker_image()
+
+    def get_darker_image(self):
+        """Returns an icon 80% more dark"""
+        icon_pressed = self.icon.copy()
 
         for x in range(self.w):
             for y in range(self.h):
-                r, g, b, *_ = tuple(icon.get_at((x, y)))
+                r, g, b, *_ = tuple(self.icon.get_at((x, y)))
                 const = 0.8
                 r = int(const * r)
                 g = int(const * g)
                 b = int(const * b)
                 icon_pressed.set_at((x, y), (r, g, b))
 
-        self.icon = icon
-        self.icon_pressed = icon_pressed
+        return icon_pressed
 
     def render(self, display):
-        """ Render the button """
+        """Render the button"""
 
         if self.clicked:
             icon = self.icon_pressed
@@ -141,6 +147,7 @@ class IconButton(BaseButton):
 
 
 class SlideBar(BaseWidget):
+
     """
     A slide bar to bick a value in a range.
     
@@ -194,17 +201,19 @@ class SlideBar(BaseWidget):
         return 'SlideBar({}:{}:{}; {}, Value: {})'.format(self.min, self.max, self.step, super().__repr__(), self.get())
 
     def get(self):
-        """ The current value of the bar """
+        """The current value of the bar"""
         return round(self.v_type(self._value), self.rounding)
 
     def set(self, value):
-        """ Set the value of the bar. If the value is out of bound, sets it to an extremum """
+        """Set the value of the bar. If the value is out of bound, sets it to an extremum"""
         value = min(self.max, max(self.min, value))
         self._value = value
         start_new_thread(self.func, (self.get(),))
 
     def _start(self):
-        """ Starts checking if the SB is shifted """
+        """Starts checking if the SB is shifted"""
+
+        # TODO : make an update method instead
 
         last_call = 42
         while self._focus:
@@ -223,14 +232,14 @@ class SlideBar(BaseWidget):
                 self.func(self.get())
 
     def focus(self):
-        """ Gives the focus to the widget """
+        """Gives the focus to the widget"""
         self._focus = True
 
         start_new_thread(SlideBar._start, (self,))
 
     @property
     def value_px(self):
-        """ The position in pixels of the cursor """
+        """The position in pixels of the cursor"""
         step = self.w / (self.max - self.min)
         return self.x + step * (self.get() - self.min)  # -self.min so self.x is the minimum possible place
 
@@ -244,7 +253,7 @@ class SlideBar(BaseWidget):
         self._value = self.min + round(real / self.step) * self.step
 
     def render(self, display):
-        """ Renders the bar on the display """
+        """Renders the bar on the display"""
 
         # the bar
         bar_rect = pygame.Rect(0, 0, self.width, self.height // 3)
@@ -263,4 +272,5 @@ __all__ = ["Button", "IconButton", "SlideBar"]
 
 if __name__ == '__main__':
     from GUI.gui_examples.buttons import gui
+
     gui()

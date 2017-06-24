@@ -2,21 +2,18 @@
 
 """
 This is a module for easy drawings.
+Every function provides anti-aliased shapes.
 """
 
 import pygame
 from pygame import gfxdraw
 
-try:
-    from GUI.locals import BLACK, ROUNDED, FLAT
-    from GUI.math import V2, merge_rects
-except ImportError:
-    from .math import V2, merge_rects
-    from .locals import BLACK, ROUNDED, FLAT
+from GUI.math import V2, merge_rects
+from GUI.locals import BLACK, ROUNDED, FLAT
 
 
 def line(surf, start, end, color=BLACK, width=1, style=FLAT):
-    """ Draws an antialiased on the surface. """
+    """Draws an antialiased line on the surface."""
 
     width = round(width, 1)
     if width == 1:
@@ -26,19 +23,19 @@ def line(surf, start, end, color=BLACK, width=1, style=FLAT):
     start = V2(*start)
     end = V2(*end)
 
-    ab = end - start
-    u = ab.normnorm() * width / 2
+    line_vector = end - start
+    half_side = line_vector.normnorm() * width / 2
 
-    p = start + u
-    q = start - u
-    r = end - u
-    s = end + u
+    point1 = start + half_side
+    point2 = start - half_side
+    point3 = end - half_side
+    point4 = end + half_side
 
     liste = [
-        (p.x, p.y),
-        (q.x, q.y),
-        (r.x, r.y),
-        (s.x, s.y)
+        (point1.x, point1.y),
+        (point2.x, point2.y),
+        (point3.x, point3.y),
+        (point4.x, point4.y)
     ]
 
     rect = polygon(surf, liste, color)
@@ -53,7 +50,7 @@ def line(surf, start, end, color=BLACK, width=1, style=FLAT):
 
 
 def circle(surf, xy, r, color=BLACK):
-    """ Draw an antialiased filled circle on the given surface """
+    """Draw an antialiased filled circle on the given surface"""
 
     x, y = xy
 
@@ -69,7 +66,7 @@ def circle(surf, xy, r, color=BLACK):
 
 
 def ring(surf, xy, r, width, color):
-    """ Draws a ring """
+    """Draws a ring"""
 
     r2 = r - width
 
@@ -93,7 +90,7 @@ def ring(surf, xy, r, width, color):
             x -= 1
             err -= 2 * x + 1
 
-    def line(surf, color, x, y, right):
+    def h_fill_the_circle(surf, color, x, y, right):
         if -r2 <= y <= r2:
             pygame.draw.line(surf, color, (x0 + right[y], y0 + y), (x0 + x, y0 + y))
             pygame.draw.line(surf, color, (x0 - right[y], y0 + y), (x0 - x, y0 + y))
@@ -106,10 +103,10 @@ def ring(surf, xy, r, width, color):
 
     while x >= y:
 
-        line(surf, color, x, y, right)
-        line(surf, color, x, -y, right)
-        line(surf, color, y, x, right)
-        line(surf, color, y, -x, right)
+        h_fill_the_circle(surf, color, x, y, right)
+        h_fill_the_circle(surf, color, x, -y, right)
+        h_fill_the_circle(surf, color, y, x, right)
+        h_fill_the_circle(surf, color, y, -x, right)
 
         y += 1
         if (err < 0):
@@ -123,7 +120,7 @@ def ring(surf, xy, r, width, color):
 
 
 def polygon(surf, points, color):
-    """ Draw an antialiased filled polygon on a surfae """
+    """Draw an antialiased filled polygon on a surface"""
 
     gfxdraw.aapolygon(surf, points, color)
     gfxdraw.filled_polygon(surf, points, color)

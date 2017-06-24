@@ -1,3 +1,7 @@
+# coding=utf-8
+
+"""A use example of texts."""
+
 import pygame
 
 from GUI import SimpleText, LaText, Font
@@ -18,7 +22,7 @@ M=
   \end{bmatrix}
 \]
 """, (300, 150), color=RED, font=Font(10))
-    pi = LaText('$$\pi$$', (84, 42), LIGHT_GREY, font=Font(24))  # Too big fonts doesn't works, max is 24
+    pi = LaText(r'$$\pi$$', (84, 42), LIGHT_GREY, font=Font(24))  # Too big fonts doesn't works, max is 24
 
     pi_size = 24
     run = True
@@ -30,8 +34,10 @@ M=
             if e.type == pygame.MOUSEBUTTONDOWN:
                 if e.button == 4:
                     pi_size = max(pi_size - 1, 1)
-                if e.button == 5:
+                elif e.button == 5:
                     pi_size += 1
+
+                normal_text.set_font_size(px=pi_size)
                 pi.font.font_size = pi_size
                 pi.text = pi_size
 

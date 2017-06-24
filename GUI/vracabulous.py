@@ -1,24 +1,34 @@
 # coding=utf-8
+
+"""
+A module with a lot of helping functions.
+This can help to every project, but is not too specific to make a entire module.
+"""
+
 import os
 import pygame
 from pygame.locals import *
 from collections import defaultdict
 
-from GUI import WHITE
-from GUI.locals import FLASH_CREEN, MIDNIGHT_BLUE, TOPLEFT
+from GUI.locals import FLASH_GREEN, MIDNIGHT_BLUE, TOPLEFT, WHITE
 from GUI.text import SimpleText
 
 
 class FPSIndicator(SimpleText):
-    """ A small text on the top right corner of the screen shoing the fps """
+    """A small text on the top right corner of the screen showing the fps."""
 
-    def __init__(self, clock):
+    def __init__(self, clock: pygame.time.Clock):
+        """A widget to indicate the FPS on the topleft corner of the screen.
+
+        :param clock: The clock used to control the fps.
+        """
         self.clock = clock
 
-        def text():
-            return str(round(self.clock.get_fps()))
+        super().__init__(self.get_fps_text, (0, 0), FLASH_GREEN, MIDNIGHT_BLUE, anchor=TOPLEFT)
 
-        super().__init__(text, (0, 0), FLASH_CREEN, MIDNIGHT_BLUE, anchor=TOPLEFT)
+    def get_fps_text(self):
+        """Retruna string representing the fps."""
+        return str(round(self.clock.get_fps()))
 
     def render(self, display):
         pygame.draw.rect(display, MIDNIGHT_BLUE, ((0, 0), (20, 28)))
@@ -28,7 +38,7 @@ class FPSIndicator(SimpleText):
 
 
 class FocusSelector:
-    """ A tool to navigate between many objects easily """
+    """A tool to navigate between many objects easily."""
 
     def __init__(self, *items):
         assert len(items) > 0
@@ -50,18 +60,15 @@ class FocusSelector:
         return len(self.items)
 
     def next(self):
-        """ Selects the next item """
-
+        """Selects the next item."""
         self.select(self._selected + 1)
 
     def prev(self):
-        """ Selects the previous item """
-
+        """Selects the previous item."""
         self.select(self._selected - 1)
 
     def select(self, item):
-        """ Select an arbitrary item, by possition or by reference """
-
+        """Select an arbitrary item, by possition or by reference."""
         self._on_unselect[self._selected]()
         self.selected().unfocus()
 
@@ -74,23 +81,21 @@ class FocusSelector:
         self._on_select[self._selected]()
 
     def selected(self):
-        """ Returns the curently focused object """
-
+        """Return the curently focused object."""
         return self.items[self._selected]
 
     def selected_index(self):
-        """ The index of the selected item in the item list """
+        """Return the index of the selected item in the item list."""
         return self._selected
 
     def is_selected(self, item):
-        """ True is the object is focused """
-
+        """Return true if the object is focused."""
         return self.items.index(item) == self._selected
 
     def on_select(self, item, action):
         """
-        Adds an action to make when an object is selected
-        Only one action can be stored this way
+        Add an action to make when an object is selected.
+        Only one action can be stored this way.
         """
 
         if not isinstance(item, int):
@@ -99,8 +104,7 @@ class FocusSelector:
         self._on_select[item] = action
 
     def on_unselect(self, item, action):
-        """ Adds an action to make when an object is unfocused """
-
+        """Add an action to make when an object is unfocused."""
         if not isinstance(item, int):
             item = self.items.index(item)
 
@@ -184,17 +188,18 @@ class Windows:
         - the render() to draw your widgets
         Don't forget to call super() on those methods
 
-    class variable to customise the project : FPS, VIDEO_OPTION, SCREEN_SIZE, NAME
+    class variable to customise the project : FPS, VIDEO_OPTION, SCREEN_SIZE, NAME, EVENT_ALLOWED
     """
 
     SCREEN_SIZE = 800, 500
     NAME = 'Empty project'
     VIDEO_OPTIONS = DOUBLEBUF | VIDEORESIZE
+    EVENT_ALLOWED = 0b111111111111111  # all
     FPS = 60
 
     def __init__(self):
         """
-        This is a base class for a small pygame project, you should implement
+        This is a base class for a small pygame project, you should extend
             - the __init__(): where you create all widgets
             - the update_on_event() to listen to event the way you want
             - the render() to draw your widgets
@@ -210,7 +215,7 @@ class Windows:
         self.fps = FPSIndicator(self.clock)
 
     def update_on_event(self, e):
-        """ Deals with a single event """
+        """Process a single event."""
         if e.type == QUIT:
             self.running = False
 
@@ -226,30 +231,27 @@ class Windows:
             self.screen = self.new_screen()
 
     def update(self):
-        """ Gets all events and deal with then by calling update_on_event() """
-
+        """Get all events and process them by calling update_on_event()"""
         for e in pygame.event.get():
             self.update_on_event(e)
 
     def render(self):
-        """ Renders the screen. Here you must draw everything """
-
+        """Render the screen. Here you must draw everything."""
         self.screen.fill(WHITE)
         self.fps.render(self.screen)
 
     def update_screen(self):
-        """ Refreshes the screen. You don't need to override this except to update only small portins of the screen """
-
+        """Refresh the screen. You don't need to override this except to update only small portins of the screen."""
         self.clock.tick(self.FPS)
         pygame.display.update()
 
+    # noinspection PyMethodMayBeStatic
     def destroy(self):
-        """ Clean what is needed at the end and returns what run() returns """
+        """Clean what is needed at the end and returns what run() returns"""
         pass
 
     def run(self):
-        """ The run loop. Returns self.destroy() """
-
+        """The run loop. Returns self.destroy()"""
         while self.running:
             self.update()
             self.render()
@@ -258,12 +260,13 @@ class Windows:
         return self.destroy()
 
     def new_screen(self):
-        """ Makes a new screen with a size of SCREEN_SIZE, and VIDEO_OPTION as flags. Sets the windows name to NAME """
-
+        """Makes a new screen with a size of SCREEN_SIZE, and VIDEO_OPTION as flags. Sets the windows name to NAME."""
         os.environ['SDL_VIDEO_CENTERED'] = '1'
         pygame.display.set_caption(self.NAME)
 
-        return pygame.display.set_mode(self.SCREEN_SIZE, self.VIDEO_OPTIONS)
+        screen =  pygame.display.set_mode(self.SCREEN_SIZE, self.VIDEO_OPTIONS)
+        pygame.event.set_allowed(self.EVENT_ALLOWED)
 
+        return screen
 
 __all__ = ['FocusSelector', 'FPSIndicator', 'Separator', 'Windows']

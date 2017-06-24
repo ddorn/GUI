@@ -1,9 +1,13 @@
+# coding=utf-8
+
+"""A use example of Bezier()."""
 import pygame
-from pygame.locals import *
+from pygame.constants import *
 from random import choice
 
-from GUI import COLORS, WHITE, ORANGE, FPSIndicator, V2
+from GUI import FPSIndicator, V2
 from GUI.geo import Bezier, Point
+from GUI.locals import COLORS, WHITE, ORANGE
 
 SCREEN_SIZE = 800, 500
 ALL = (0, 0), SCREEN_SIZE
@@ -11,7 +15,7 @@ FPS = 40
 
 
 def gui():
-    """ Main function """
+    """Main function"""
 
     # #######
     # setup all objects

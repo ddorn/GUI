@@ -1,3 +1,7 @@
+# coding=utf-8
+
+"""This module provides simle shapes to draw or attach to widgets."""
+
 import pygame
 
 from GUI.locals import TURQUOISE, PINK

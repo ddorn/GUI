@@ -1,10 +1,12 @@
+"""An empty template to quickly start a new project."""
+
 # coding=utf-8
 
 import os
 import pygame
-from pygame.locals import *
+from pygame.constants import *
 
-from GUI import *
+from GUI import FPSIndicator
 from GUI.locals import *
 
 pygame.init()
@@ -21,7 +23,7 @@ def new_screen():
 
 
 def gui():
-    """ Main function """
+    """Main function"""
 
     global SCREEN_SIZE
 
@@ -43,8 +45,7 @@ def gui():
         # Input loop
         # #######
 
-        mouse = pygame.mouse.get_pos()
-
+        # mouse = pygame.mouse.get_pos()
         for e in pygame.event.get():
             if e.type == QUIT:
                 return 0

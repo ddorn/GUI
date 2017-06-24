@@ -1,4 +1,7 @@
 # coding=utf-8
+
+"""A module with math functions and a vector class (V2)."""
+
 from math import sqrt
 
 import pygame
@@ -13,7 +16,7 @@ def comb(n, k):
 
 
 def merge_rects(rect1, rect2):
-    """ Returns the smallest rect containning two rects """
+    """Return the smallest rect containning two rects"""
     r = pygame.Rect(rect1)
     t = pygame.Rect(rect2)
 
@@ -26,10 +29,14 @@ def merge_rects(rect1, rect2):
 
 
 class V2:
-    """ A vector """
+    """A vector."""
 
     def __init__(self, x, y=None):
-        """ A basic vector for calculus and positionning """
+        """A basic vector for calculus and positionning.
+
+        :param x: Can be a tuple (3, 5.2) and it is interpreted as (x, y), else, it's just the first coordinate.
+        :param y: The second coord. if not present x is consdered as a tuple.
+        """
         if y is None:
             self.x = x[0]
             self.y = x[1]
@@ -83,30 +90,29 @@ class V2:
 
     @property
     def t(self):
-        """ The vecor as a tuple """
+        """The vecor as a tuple"""
         return self.x, self.y
 
     @property
     def ti(self):
-        """ The vecor as a tuple of integer (round to closest)"""
-
+        """The vecor as a tuple of integer (round to closest)"""
         return round(self.x), round(self.y)
 
     def squared_norm(self):
-        """ Returns the squared norm of the vector """
-
+        """Return the squared norm of the vector"""
         return self.x ** 2 + self.y ** 2
 
     def norm(self):
-        """ Returns the norm of the vector """
+        """Return the norm of the vector"""
         return sqrt(self.squared_norm())
 
     def normnorm(self):
         """
-        Returns a vecor noraml to this one with a norm of one
+        Return a vecor noraml to this one with a norm of one
 
         :return: V2
         """
+
         n = self.norm()
         return V2(-self.y / n, self.x / n)
 

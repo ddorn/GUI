@@ -1,8 +1,8 @@
 # coding=utf-8
 
 import pytest
+import pygame
 from pygame.locals import *
-
 from pygame.event import Event
 
 from GUI.base import *
@@ -21,7 +21,6 @@ def widget2():
 
 @pytest.fixture
 def screen():
-    import pygame
     return pygame.Surface((100, 100))
 
 

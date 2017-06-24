@@ -1,7 +1,7 @@
 import pytest
-from GUI import BLACK
 
-from GUI.colors import *
+from GUI.colors import bw_contrasted
+from GUI.locals import BLACK
 
 
 @pytest.mark.parametrize('color', [

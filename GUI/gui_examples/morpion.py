@@ -1,7 +1,10 @@
 # coding=utf-8
+
+"""A morpion, to demonstaret the use of PygameGUILib."""
+
 import os
 import pygame
-from pygame.locals import *
+from pygame.constants import *
 from random import randint, choice
 
 from GUI.draw import ring, circle, line
@@ -69,8 +72,11 @@ class Morpion(object):
                 else:
                     b = False
 
-            if a or b:
-                break
+            if a:
+                return a
+
+            if b:
+                return b
 
             if d1 and d1 is True or d1 == self.grid[i][i]:
                 d1 = self.grid[i][i]
@@ -180,7 +186,7 @@ def pos_from_mouse(mouse):
 
 
 def gui():
-    """ Main function """
+    """Main function"""
 
     # #######
     # setup all objects
