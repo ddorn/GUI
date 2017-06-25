@@ -194,9 +194,10 @@ class Windows:
     SCREEN_SIZE = 800, 500
     NAME = 'Empty project'
     VIDEO_OPTIONS = DOUBLEBUF | VIDEORESIZE
-    EVENT_ALLOWED = 0b111111111111111  # all
+    EVENT_ALLOWED = QUIT | ACTIVEEVENT | KEYDOWN | KEYUP | MOUSEMOTION | MOUSEBUTTONUP | MOUSEBUTTONDOWN | \
+                    JOYAXISMOTION | JOYBALLMOTION | JOYHATMOTION | JOYBUTTONUP | JOYBUTTONDOWN | VIDEORESIZE | \
+                    VIDEOEXPOSE | USEREVENT  # all events
     FPS = 60
-
     def __init__(self):
         """
         This is a base class for a small pygame project, you should extend
