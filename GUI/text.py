@@ -249,6 +249,10 @@ class InLineTextBox(SimpleText):
         self.text = self.text[:self.cursor] + letter + self.text[self.cursor:]
         self.cursor += 1
 
+    def clear(self):
+        self.text = ''
+        self._render()
+
     def update(self, event_or_list):
         """Update the text and position of cursor according to the event passed."""
 
