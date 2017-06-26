@@ -27,6 +27,10 @@ class BaseWidget(pygame.Rect):
 
         The pos, size and anchor can be tuples or funcions that returns a tuple (an anchostr for the anchor)
         """
+
+        self.__verify(pos)
+        self.__verify(size)
+
         super().__init__((0, 0), (0, 0))
 
         self._anchor = anchor
@@ -82,6 +86,13 @@ class BaseWidget(pygame.Rect):
         super(BaseWidget, self).__setattr__("width", width)
         super(BaseWidget, self).__setattr__("height", height)
         super(BaseWidget, self).__setattr__(self.anchor, self.pos)
+
+    def __verify(self, pos_or_size):
+        if not callable(pos_or_size):
+            assert isinstance(pos_or_size, tuple)
+            assert len(pos_or_size) == 2
+            assert isinstance(pos_or_size[0], int)
+            assert isinstance(pos_or_size[1], int)
 
     def as_rect(self):
         """Returns the pos and the size of the rect like you can pass to the pygame.Rect constructor or any widget"""
