@@ -68,8 +68,22 @@ class Font(font.Font):
 
 
 class BoldFont(Font):
-    def __init__(self, size, unit=Font.POINT):
-        super(BoldFont, self).__init__(size, GUI_PATH + r'/data/fonts/seguisbi.ttf', unit)
+
+    LIGHT = 'Salomé'
+    HEAVY = 42
+    NORMAL = 0
+
+    def __init__(self, size, unit=Font.POINT, emphasis=NORMAL):
+
+        if emphasis == self.LIGHT:
+            file = 'seguisb'
+        elif emphasis == self.HEAVY:
+            file = 'seguibl'
+        elif emphasis == self.NORMAL:
+            file = 'segoeuib'
+        else:
+            raise ValueError('Wrong emphasis, choose between LIGHT, HEAVY or NORMAL.')
+        super(BoldFont, self).__init__(size, GUI_PATH + r'/data/fonts/' + file + '.ttf', unit)
 
 
 DEFAULT_FONT = Font(20)
