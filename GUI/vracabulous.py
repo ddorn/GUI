@@ -10,6 +10,7 @@ import pygame
 from pygame.locals import *
 from collections import defaultdict
 
+from GUI.base import BaseWidget
 from GUI.locals import FLASH_GREEN, MIDNIGHT_BLUE, TOPLEFT, WHITE
 from GUI.text import SimpleText
 
@@ -180,7 +181,7 @@ class Separator:
         return self * (1 / other)
 
 
-class Windows:
+class Window:
     """
     This is a base class for a small pygame project, you should implement
         - the __init__(): where you create all widgets
@@ -195,9 +196,12 @@ class Windows:
     NAME = 'Empty project'
     VIDEO_OPTIONS = DOUBLEBUF | VIDEORESIZE
     EVENT_ALLOWED = (QUIT, ACTIVEEVENT, KEYDOWN, KEYUP, MOUSEMOTION, MOUSEBUTTONUP, MOUSEBUTTONDOWN,
-                    JOYAXISMOTION, JOYBALLMOTION, JOYHATMOTION, JOYBUTTONUP, JOYBUTTONDOWN, VIDEORESIZE,
-                    VIDEOEXPOSE, USEREVENT)  # all events
+                     JOYAXISMOTION, JOYBALLMOTION, JOYHATMOTION, JOYBUTTONUP, JOYBUTTONDOWN, VIDEORESIZE,
+                     VIDEOEXPOSE, USEREVENT)  # all events
     FPS = 60
+    SHOW_FPS = False
+    BACKGROUND = WHITE
+
     def __init__(self):
         """
         This is a base class for a small pygame project, you should extend
@@ -212,8 +216,32 @@ class Windows:
         self.running = True
         self.screen = self.new_screen()
         self.clock = pygame.time.Clock()
+        self._widgets = []
 
         self.fps = FPSIndicator(self.clock)
+
+    def add(self, widget, condition=lambda: 42):
+        """
+        Add a widget to the widows.
+
+        The widget will auto render. You can use the function like that if you want to keep the widget accecible :
+            self.my_widget = self.add(my_widget)
+        """
+
+        assert callable(condition)
+        assert isinstance(widget, BaseWidget)
+        self._widgets.append((widget, condition))
+
+        return widget
+
+    def remove(self, widget):
+        """Remove a widget from the window."""
+        for i, (wid, _) in enumerate(self._widgets):
+            if widget is wid:
+                del self._widgets[i]
+                return True
+
+        raise ValueError('Widget not in list')
 
     def update_on_event(self, e):
         """Process a single event."""
@@ -233,13 +261,24 @@ class Windows:
 
     def update(self):
         """Get all events and process them by calling update_on_event()"""
-        for e in pygame.event.get():
+        events = pygame.event.get()
+        for e in events:
             self.update_on_event(e)
+
+        for wid, cond in self._widgets:
+            if cond():
+                wid.update(events)
 
     def render(self):
         """Render the screen. Here you must draw everything."""
-        self.screen.fill(WHITE)
-        self.fps.render(self.screen)
+        self.screen.fill(self.BACKGROUND)
+
+        for wid, cond in self._widgets:
+            if cond():
+                wid.render(self.screen)
+
+        if self.SHOW_FPS:
+            self.fps.render(self.screen)
 
     def update_screen(self):
         """Refresh the screen. You don't need to override this except to update only small portins of the screen."""
@@ -249,7 +288,7 @@ class Windows:
     # noinspection PyMethodMayBeStatic
     def destroy(self):
         """Clean what is needed at the end and returns what run() returns"""
-        pass
+        return 0
 
     def run(self):
         """The run loop. Returns self.destroy()"""
@@ -265,9 +304,25 @@ class Windows:
         os.environ['SDL_VIDEO_CENTERED'] = '1'
         pygame.display.set_caption(self.NAME)
 
-        screen =  pygame.display.set_mode(self.SCREEN_SIZE, self.VIDEO_OPTIONS)
+        screen_s = self.SCREEN_SIZE
+        video_options = self.VIDEO_OPTIONS
+        if FULLSCREEN & self.VIDEO_OPTIONS:
+            video_options ^= FULLSCREEN
+            video_options |= NOFRAME
+            screen_s = (0, 0)
+
+        screen = pygame.display.set_mode(screen_s, video_options)
+
+        if FULLSCREEN & self.VIDEO_OPTIONS:
+            self.SCREEN_SIZE = screen.get_size()
+
+        if not QUIT in self.EVENT_ALLOWED:
+            self.EVENT_ALLOWED = list(self.EVENT_ALLOWED)
+            self.EVENT_ALLOWED.append(QUIT)
+
         pygame.event.set_allowed(self.EVENT_ALLOWED)
 
         return screen
 
-__all__ = ['FocusSelector', 'FPSIndicator', 'Separator', 'Windows']
+
+__all__ = ['FocusSelector', 'FPSIndicator', 'Separator', 'Window']
