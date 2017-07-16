@@ -6,51 +6,83 @@ import pygame
 from _thread import start_new_thread
 from time import time, sleep
 
-from GUI.locals import GREEN, CENTER, BLUE, LIGHT_GREY
-from GUI.font import DEFAULT_FONT, Font
-from GUI.draw import circle
-from GUI.text import SimpleText
+from pygame.constants import MOUSEBUTTONDOWN, MOUSEBUTTONUP, MOUSEMOTION
+
 from GUI.base import BaseWidget
-from GUI.colors import bw_contrasted
+from GUI.colors import bw_contrasted, mix
+from GUI.draw import circle
+from GUI.font import Font
+from GUI.locals import CENTER, BLUE, LIGHT_GREY, BLACK, ORANGE, GREEN
+from GUI.text import SimpleText
+from GUI.vracabulous import Separator
 
 
 class BaseButton(BaseWidget):
 
     """Abstract base class for any button"""
 
-    def __init__(self, func, pos, size, anchor):
+    CALL_ON_PRESS = 1
+    THREADED_CALL = 2
+
+    def __init__(self, func, pos, size, anchor, flags=0):
         """
         Creates a new BaseButton object.
         
         :param func: calback function that takes no argument
         :param pos: the widget pos. Can be a callable or a 2-tuple
-        :size: the width size. Can be a callable or a 2-tuple
+        :param size: the width size. Can be a callable or a 2-tuple
+        :param flags: Can be:
+            - CALL_ON_PRESS if you want func to be call when the button is pressed instead of when it's released
+            - THREADED_CALL if you want func to be called in a thread
+            You can pass multiple flags with the pipe operator |
         """
         super().__init__(pos, size, anchor)
         self.func = func
+        self.flags = flags
 
-    def click(self, milis=None):
+    def click(self, force_no_call=False, milis=None):
         """
         Call when the button is pressed. This start the callback function in a thread
         If :milis is given, will release the button after :milis miliseconds
         """
-        start_new_thread(self.func, ())
+
+        if self.clicked:
+            return False
+
+        if not force_no_call and self.flags & self.CALL_ON_PRESS:
+            if self.flags & self.THREADED_CALL:
+                start_new_thread(self.func, ())
+            else:
+                self.func()
+
         super().click()
 
         if milis is not None:
-            start_new_thread(self.release, (milis,))
+            start_new_thread(self.release, (), {'milis': milis})
 
-    def release(self, milis=0):
+    def release(self, force_no_call=False, milis=0):
         """
         Call this when the button is released
         Blocks for :milis miliseconds (used by .press() for auto release)
         """
+        if not self.clicked:
+            return False
+
         if milis:
             sleep(milis / 1000)
 
         super().release()
 
-    def render(self, display):
+        if force_no_call:
+            return
+
+        if not self.flags & self.CALL_ON_PRESS:
+            if self.flags & self.THREADED_CALL:
+                start_new_thread(self.func, ())
+            else:
+                self.func()
+
+    def render(self, surf):
         raise NotImplementedError
 
 
@@ -58,43 +90,135 @@ class Button(BaseButton):
 
     """A basic button."""
 
-    def __init__(self, func, pos, size, text='', color=GREEN, color_pressed=None, anchor=CENTER):
+    NO_MOVE = 4
+    NO_SHADOW = 8
+
+    def __init__(self, func, pos, size, text='', color=ORANGE, anchor=CENTER, flags=0):
         """
         Creates a clickable button.
         
-        :param func: callback function wih no arguments
+        :param func: callback function with no arguments
         :param size: widget size. Can be a callable or a 2-tuple.
         :param pos: widget position. Can be a callable or a 2-tuple.
         :param anchor: widget anchor
         :param text: Text to be displayed on the button
         :param color: the natural color of the button
-        :param color_pressed: color of the button when it is pressed
+        :param flags: see BaseButton
         """
 
-        super().__init__(func, pos, size, anchor)
+        super().__init__(func, pos, size, anchor, flags)
 
-        self.text = text
         self.color = color
+        self.hovered = False
+        self.hover_enabled = True
+        self.pressed = False
+        self.text = SimpleText(text, lambda: self.center, bw_contrasted(self.color), self.color,
+                               Font(self.height - 6, unit=Font.PIXEL))
 
-        if color_pressed is None:
-            color_pressed = color[0] // 2, color[1] // 2, color[2] // 2
-        self.color_pressed = color_pressed
+    def disable_hover(self):
+        """The button no more fades when hovered."""
+        self.hover_enabled = False
+        return self
 
-    def render(self, display):
-        if self.clicked:
-            color = self.color_pressed
+    def enable_hover(self):
+        """"The button fades when hovered."""
+        self.hover_enabled = True
+        return self
+
+    def _get_color(self):
+        """Return the color of the button, depending on its state"""
+        if self.clicked and self.hovered:  # the mouse is over the button
+            color = mix(self.color, BLACK, 0.8)
+
+        elif self.hovered and self.hover_enabled:
+            color = mix(self.color, BLACK, 0.9)
+
         else:
             color = self.color
 
-        pygame.draw.rect(display, color, self)
+        self.text.bg_color = color
+        return color
 
-        text_color = bw_contrasted(color)
+    @property
+    def _front_delta(self):
+        """Return the offset of the colored part."""
+        if self.flags & self.NO_MOVE:
+            return Separator(0, 0)
 
-        text_surf = DEFAULT_FONT.render(self.text, True, text_color, color)
-        text_rect = text_surf.get_rect()
-        text_rect.center = self.center
+        if self.clicked and self.hovered:  # the mouse is over the button
+            delta = 2
 
-        display.blit(text_surf, text_rect)
+        elif self.hovered and self.hover_enabled:
+            delta = 1
+
+        else:
+            delta = 0
+
+        return Separator(delta, delta)
+
+    @property
+    def _bg_delta(self):
+        """Return the offset of the shadow."""
+        if self.flags and self.NO_MOVE:
+            return Separator(2, 2)
+
+        if self.clicked and self.hovered:  # the mouse is over the button
+            delta = 2
+
+        elif self.hovered and self.hover_enabled:
+            delta = 2
+
+        else:
+            delta = 2
+
+        return Separator(delta, delta)
+
+    def update(self, event_or_list):
+        """Update the button with the events."""
+
+        for e in super().update(event_or_list):
+            if e.type == MOUSEBUTTONDOWN:
+                if e.pos in self:
+                    self.click()
+                else:
+                    self.release(force_no_call=True)
+
+            elif e.type == MOUSEBUTTONUP:
+                self.release(force_no_call=e.pos not in self)
+
+            elif e.type == MOUSEMOTION:
+                if e.pos in self:
+                    self.hovered = True
+                else:
+                    self.hovered = False
+
+    def render(self, surf):
+        """Render the button on a surface."""
+        pos, size = self.topleft, self.size
+
+        if not self.flags & self.NO_SHADOW:
+            pygame.draw.rect(surf, LIGHT_GREY, (pos + self._bg_delta, size))
+        pygame.draw.rect(surf, self._get_color(), (pos + self._front_delta, size))
+
+        self.text.center = self.center + self._front_delta
+        self.text.render(surf)
+
+
+class RoundButton(Button):
+    def __init__(self, func, pos, radius: int, text='', color=GREEN, anchor=CENTER, flags=0):
+        super().__init__(func, pos, (radius*2, radius*2), text, color, anchor, flags)
+
+        self.text = SimpleText(text, lambda: self.center, bw_contrasted(self.color), self.color,
+                               Font(self.height//2, unit=Font.PIXEL))
+
+    def render(self, surf):
+        """Draw the button on the surface."""
+        if not self.flags & self.NO_SHADOW:
+            circle(surf, self.center + self._bg_delta, self.width / 2, LIGHT_GREY)
+        circle(surf, self.center + self._front_delta, self.width / 2, self._get_color())
+
+        self.text.center = self.center + self._front_delta
+        self.text.render(surf)
 
 
 class IconButton(BaseButton):
@@ -135,7 +259,7 @@ class IconButton(BaseButton):
 
         return icon_pressed
 
-    def render(self, display):
+    def render(self, surf):
         """Render the button"""
 
         if self.clicked:
@@ -143,7 +267,7 @@ class IconButton(BaseButton):
         else:
             icon = self.icon
 
-        display.blit(icon, self)
+        surf.blit(icon, self)
 
 
 class SlideBar(BaseWidget):

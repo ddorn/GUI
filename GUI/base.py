@@ -87,7 +87,8 @@ class BaseWidget(pygame.Rect):
         super(BaseWidget, self).__setattr__("height", height)
         super(BaseWidget, self).__setattr__(self.anchor, self.pos)
 
-    def __verify(self, pos_or_size):
+    @staticmethod
+    def __verify(pos_or_size):
         if not callable(pos_or_size):
             assert isinstance(pos_or_size, tuple)
             assert len(pos_or_size) == 2

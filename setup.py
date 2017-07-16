@@ -16,22 +16,22 @@ here = path.abspath(path.dirname(__file__))
 # to install the package and they don't have pypandoc or the README in the
 # right place.
 try:
-   import pypandoc
-   pypandoc.download_pandoc()
-   print(os.curdir)
-   print(here)
-   print(os.listdir(os.curdir))
-   try:
-       long_description = pypandoc.convert('README.md', 'rst')
-   except RuntimeError:
-       try:
-           long_description = pypandoc.convert('readme.md', "rst")
-       except RuntimeError:
-           long_description=''
-           print('FUCK THE DESCRIPTION')
-except (IOError, ImportError):
-   long_description = ''
+    import pypandoc
 
+    pypandoc.download_pandoc()
+    print(os.curdir)
+    print(here)
+    print(os.listdir(os.curdir))
+    try:
+        long_description = pypandoc.convert('README.md', 'rst')
+    except RuntimeError:
+        try:
+            long_description = pypandoc.convert('readme.md', "rst")
+        except RuntimeError:
+            long_description = ''
+            print('FUCK THE DESCRIPTION')
+except (IOError, ImportError):
+    long_description = ''
 
 setup(
     name='PygameGUILib',
@@ -49,7 +49,7 @@ setup(
     author_email='diego.dorn@free.fr',
     packages=find_packages(),
     package_data={
-        '.': 'README.*',
+        '.': ['README.*'],
         'data/fonts': ['*']
     },
     include_package_data=True,
