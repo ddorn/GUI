@@ -11,7 +11,7 @@ from pygame.locals import *
 from collections import defaultdict
 
 from GUI.base import BaseWidget
-from GUI.locals import FLASH_GREEN, MIDNIGHT_BLUE, TOPLEFT, WHITE
+from GUI.locals import FLASH_GREEN, MIDNIGHT_BLUE, TOPLEFT, WHITE, BLUE
 from GUI.text import SimpleText
 
 
@@ -180,6 +180,10 @@ class Separator:
     def __truediv__(self, other):
         return self * (1 / other)
 
+    @property
+    def t(self):
+        return self.x, self.y
+
 
 class Window:
     """
@@ -194,13 +198,14 @@ class Window:
 
     SCREEN_SIZE = 800, 500
     NAME = 'Empty project'
-    VIDEO_OPTIONS = DOUBLEBUF | VIDEORESIZE
+    VIDEO_OPTIONS = VIDEORESIZE
     EVENT_ALLOWED = (QUIT, ACTIVEEVENT, KEYDOWN, KEYUP, MOUSEMOTION, MOUSEBUTTONUP, MOUSEBUTTONDOWN,
                      JOYAXISMOTION, JOYBALLMOTION, JOYHATMOTION, JOYBUTTONUP, JOYBUTTONDOWN, VIDEORESIZE,
                      VIDEOEXPOSE, USEREVENT)  # all events
     FPS = 60
     SHOW_FPS = False
-    BACKGROUND = WHITE
+    BACKGROUND_COLOR = WHITE
+    BORDER_COLOR = BLUE
 
     def __init__(self):
         """
@@ -271,14 +276,18 @@ class Window:
 
     def render(self):
         """Render the screen. Here you must draw everything."""
-        self.screen.fill(self.BACKGROUND)
+        self.screen.fill(self.BACKGROUND_COLOR)
 
         for wid, cond in self._widgets:
             if cond():
                 wid.render(self.screen)
 
+        if self.BORDER_COLOR is not None:
+            pygame.draw.rect(self.screen, self.BORDER_COLOR, ((0, 0), self.SCREEN_SIZE), 1)
+
         if self.SHOW_FPS:
             self.fps.render(self.screen)
+
 
     def update_screen(self):
         """Refresh the screen. You don't need to override this except to update only small portins of the screen."""
@@ -323,6 +332,9 @@ class Window:
         pygame.event.set_allowed(self.EVENT_ALLOWED)
 
         return screen
+
+
+Sep = Separator
 
 
 __all__ = ['FocusSelector', 'FPSIndicator', 'Separator', 'Window']

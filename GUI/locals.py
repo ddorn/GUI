@@ -49,6 +49,10 @@ MIDLEFT = 'midleft'
 MIDBOTTOM = 'midbottom'
 MIDRIGHT = 'midright'
 
+
+PIXEL = 'pixel'
+PERCENT = 'percent'
+
 ROUNDED = 'rounded'
 FLAT = 'flat'
 

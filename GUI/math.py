@@ -60,7 +60,7 @@ class V2:
     def __getitem__(self, item):
         if not isinstance(item, int):
             raise IndexError
-        if not item in [0, 1]:
+        if item not in [0, 1]:
             raise IndexError
 
         if item:
