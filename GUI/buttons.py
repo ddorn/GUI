@@ -10,7 +10,7 @@ from pygame.constants import MOUSEBUTTONDOWN, MOUSEBUTTONUP, MOUSEMOTION
 
 from GUI.base import BaseWidget
 from GUI.colors import bw_contrasted, mix
-from GUI.draw import circle
+from GUI.draw import circle, roundrect
 from GUI.font import Font
 from GUI.locals import CENTER, BLUE, LIGHT_GREY, BLACK, ORANGE, GREEN
 from GUI.text import SimpleText
@@ -18,7 +18,6 @@ from GUI.vracabulous import Separator
 
 
 class BaseButton(BaseWidget):
-
     """Abstract base class for any button"""
 
     CALL_ON_PRESS = 1
@@ -87,11 +86,12 @@ class BaseButton(BaseWidget):
 
 
 class Button(BaseButton):
-
     """A basic button."""
 
     NO_MOVE = 4
     NO_SHADOW = 8
+    NO_ROUNDING = 16
+    NO_HOVER = 32
 
     def __init__(self, func, pos, size, text='', color=ORANGE, anchor=CENTER, flags=0):
         """
@@ -115,23 +115,13 @@ class Button(BaseButton):
         self.text = SimpleText(text, lambda: self.center, bw_contrasted(self.color), self.color,
                                Font(self.height - 6, unit=Font.PIXEL))
 
-    def disable_hover(self):
-        """The button no more fades when hovered."""
-        self.hover_enabled = False
-        return self
-
-    def enable_hover(self):
-        """"The button fades when hovered."""
-        self.hover_enabled = True
-        return self
-
     def _get_color(self):
         """Return the color of the button, depending on its state"""
         if self.clicked and self.hovered:  # the mouse is over the button
             color = mix(self.color, BLACK, 0.8)
 
-        elif self.hovered and self.hover_enabled:
-            color = mix(self.color, BLACK, 0.9)
+        elif self.hovered and not self.flags & self.NO_HOVER:
+            color = mix(self.color, BLACK, 0.93)
 
         else:
             color = self.color
@@ -148,8 +138,8 @@ class Button(BaseButton):
         if self.clicked and self.hovered:  # the mouse is over the button
             delta = 2
 
-        elif self.hovered and self.hover_enabled:
-            delta = 1
+        elif self.hovered and not self.flags & self.NO_HOVER:
+            delta = 0
 
         else:
             delta = 0
@@ -165,7 +155,7 @@ class Button(BaseButton):
         if self.clicked and self.hovered:  # the mouse is over the button
             delta = 2
 
-        elif self.hovered and self.hover_enabled:
+        elif self.hovered and not self.flags & self.NO_HOVER:
             delta = 2
 
         else:
@@ -197,8 +187,15 @@ class Button(BaseButton):
         pos, size = self.topleft, self.size
 
         if not self.flags & self.NO_SHADOW:
-            pygame.draw.rect(surf, LIGHT_GREY, (pos + self._bg_delta, size))
-        pygame.draw.rect(surf, self._get_color(), (pos + self._front_delta, size))
+            if self.flags & self.NO_ROUNDING:
+                pygame.draw.rect(surf, LIGHT_GREY, (pos + self._bg_delta, size))
+            else:
+                roundrect(surf, (pos + self._bg_delta, size), LIGHT_GREY + (100,), 5)
+
+        if self.flags & self.NO_ROUNDING:
+            pygame.draw.rect(surf, self._get_color(), (pos + self._front_delta, size))
+        else:
+            roundrect(surf, (pos + self._front_delta, size), self._get_color(), 5)
 
         self.text.center = self.center + self._front_delta
         self.text.render(surf)
@@ -206,10 +203,10 @@ class Button(BaseButton):
 
 class RoundButton(Button):
     def __init__(self, func, pos, radius: int, text='', color=GREEN, anchor=CENTER, flags=0):
-        super().__init__(func, pos, (radius*2, radius*2), text, color, anchor, flags)
+        super().__init__(func, pos, (radius * 2, radius * 2), text, color, anchor, flags)
 
         self.text = SimpleText(text, lambda: self.center, bw_contrasted(self.color), self.color,
-                               Font(self.height//2, unit=Font.PIXEL))
+                               Font(self.height // 2, unit=Font.PIXEL))
 
     def render(self, surf):
         """Draw the button on the surface."""
@@ -271,7 +268,6 @@ class IconButton(BaseButton):
 
 
 class SlideBar(BaseWidget):
-
     """
     A slide bar to bick a value in a range.
     
