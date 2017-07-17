@@ -3,10 +3,10 @@ from pygame.constants import MOUSEBUTTONDOWN, KEYDOWN, QUIT
 
 from GUI.locals import BLACK, PUMPKIN, PINK, WHITE, RED, GREEN
 from GUI.menu import Menu
-from GUI.vracabulous import Windows
+from GUI.vracabulous import Window
 
 
-class MenuExample(Windows):
+class MenuExample(Window):
 
     """An example of usage of Menu."""
 
