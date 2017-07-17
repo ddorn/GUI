@@ -4,12 +4,10 @@
 
 import pygame
 
-from GUI.locals import TURQUOISE, PINK, TOPLEFT, PURPLE
-from GUI.draw import circle, line
 from GUI.base import BaseWidget
+from GUI.draw import circle, line, roundrect
+from GUI.locals import TURQUOISE, PINK, TOPLEFT, PURPLE, PIXEL
 from GUI.math import V2
-
-
 
 
 class Point(BaseWidget):
@@ -75,9 +73,8 @@ class Line(BaseWidget):
         line(surf, self.pos1, self.pos2, self.color, self.line_width)
 
 
-
-
 class Rectangle(BaseWidget):
+
     FILLED = 3
     ROUNDED = 42
     BORDER = 69
@@ -91,12 +88,18 @@ class Rectangle(BaseWidget):
     def render(self, surf):
         if self.style == self.FILLED:
             return pygame.draw.rect(surf, self.color, self.as_rect())
+
         elif self.style == self.BORDER:
             papy = self.params.get('width', 1)
             return pygame.draw.rect(surf, self.color, self.as_rect(), papy)
 
+        elif self.style == self.ROUNDED:
+            rounding = self.params.get('rounding', 5)
+            unit = self.params.get('unit', PIXEL)
+            roundrect(surf, self, self.color, rounding, unit)
+
         else:
-            print('fail')
+            raise ValueError('Style not supported.')
 
 
-__all__ = ['Rectangle', 'Point']
+__all__ = ['Rectangle', 'Point', 'Line']

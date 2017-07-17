@@ -8,8 +8,10 @@ Every function provides anti-aliased shapes.
 import pygame
 from pygame import gfxdraw
 
+from pygame.constants import SRCALPHA, BLEND_RGBA_MAX, BLEND_RGBA_MIN
+
 from GUI.math import V2, merge_rects
-from GUI.locals import BLACK, ROUNDED, FLAT
+from GUI.locals import BLACK, ROUNDED, FLAT, PIXEL, PERCENT
 
 
 def line(surf, start, end, color=BLACK, width=1, style=FLAT):
@@ -31,6 +33,7 @@ def line(surf, start, end, color=BLACK, width=1, style=FLAT):
     point3 = end - half_side
     point4 = end + half_side
 
+    # noinspection PyUnresolvedReferences
     liste = [
         (point1.x, point1.y),
         (point2.x, point2.y),
@@ -84,9 +87,9 @@ def ring(surf, xy, r, width, color):
         right[-y] = x
 
         y += 1
-        if (err <= 0):
+        if err <= 0:
             err += 2 * y + 1
-        if (err > 0):
+        if err > 0:
             x -= 1
             err -= 2 * x + 1
 
@@ -109,14 +112,57 @@ def ring(surf, xy, r, width, color):
         h_fill_the_circle(surf, color, y, -x, right)
 
         y += 1
-        if (err < 0):
+        if err < 0:
             err += 2 * y + 1
-        if (err >= 0):
+        if err >= 0:
             x -= 1
             err -= 2 * x + 1
 
     gfxdraw.aacircle(surf, x0, y0, r, color)
     gfxdraw.aacircle(surf, x0, y0, r2, color)
+
+
+def roundrect(surface, rect, color, rounding=5, unit=PIXEL):
+    """
+    Draw an antialiased round rectangle on the surface.
+
+    surface : destination
+    rect    : rectangle
+    color   : rgb or rgba
+    radius  : 0 <= radius <= 1
+    :source: http://pygame.org/project-AAfilledRoundedRect-2349-.html
+    """
+
+    if unit == PERCENT:
+        rounding = int(min(rect.size) / 2 * rounding / 100)
+
+    rect = pygame.Rect(rect)
+    color = pygame.Color(*color)
+    alpha = color.a
+    color.a = 0
+    pos = rect.topleft
+    rect.topleft = 0, 0
+    rectangle = pygame.Surface(rect.size, SRCALPHA)
+
+    circle = pygame.Surface([min(rect.size) * 3] * 2, SRCALPHA)
+    pygame.draw.ellipse(circle, (0, 0, 0), circle.get_rect(), 0)
+    circle = pygame.transform.smoothscale(circle, (rounding, rounding))
+
+    rounding = rectangle.blit(circle, (0, 0))
+    rounding.bottomright = rect.bottomright
+    rectangle.blit(circle, rounding)
+    rounding.topright = rect.topright
+    rectangle.blit(circle, rounding)
+    rounding.bottomleft = rect.bottomleft
+    rectangle.blit(circle, rounding)
+
+    rectangle.fill((0, 0, 0), rect.inflate(-rounding.w, 0))
+    rectangle.fill((0, 0, 0), rect.inflate(0, -rounding.h))
+
+    rectangle.fill(color, special_flags=BLEND_RGBA_MAX)
+    rectangle.fill((255, 255, 255, alpha), special_flags=BLEND_RGBA_MIN)
+
+    return surface.blit(rectangle, pos)
 
 
 def polygon(surf, points, color):
