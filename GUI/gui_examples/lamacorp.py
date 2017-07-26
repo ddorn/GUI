@@ -1,48 +1,28 @@
 import pygame
 
 import colour
-from pygame.constants import RESIZABLE
-
-from GUI.base import BaseWidget
+from pygame.constants import NOFRAME
 
 from GUI.buttons import Button, RoundButton
 from GUI.colors import name2rgb, mix
 from GUI.font import Font, BoldFont
 from GUI.geo.basics import Rectangle, Line
-from GUI.locals import TOPLEFT, BLUE, BOTTOMRIGHT, GOLD, WHITESMOKE, CONCRETE, TOPRIGHT, WHITE, CENTER
-from GUI.text import SimpleText
+from GUI.locals import TOPLEFT, BLUE, BOTTOMRIGHT, GOLD, WHITESMOKE, CONCRETE, TOPRIGHT, WHITE, MIDNIGHT_BLUE
+from GUI.text import SimpleText, InLineTextBox
 from GUI.vracabulous import Window, Separator as Sep
 
 pygame.init()
-
-
-class List(BaseWidget):
-    def __init__(self, pos, size, anchor=CENTER):
-        super().__init__(pos, size, anchor)
-
-        self._cells = []
-
-    def render(self, surf):
-        for cell in self.visible_cells():
-            cell.render(surf)
-
-    def update(self, event_or_list):
-        pass
-
-
-class ListCell(BaseWidget):
-    pass
+# noinspection PyArgumentList
+pygame.key.set_repeat(300, 40)
 
 
 class Lamacorp(Window):
 
     NAME = 'Llama & Co.'
-    VIDEO_OPTIONS = RESIZABLE
+    VIDEO_OPTIONS = NOFRAME
     SCREEN_SIZE = 970, 600
     BACKGROUND_COLOR = WHITE
     BORDER_COLOR = GOLD
-    FPS = 1000
-    SHOW_FPS = 1
 
     def __init__(self):
         super(Lamacorp, self).__init__()
@@ -118,6 +98,9 @@ class Lamacorp(Window):
             Rectangle((120, 40), (300, 300), color=(0, 0, 255, 120), style=Rectangle.ROUNDED)
         )
 
+        self.tect_box = self.add(InLineTextBox(lambda:(self.SCREEN_SIZE[0]//2, self.SCREEN_SIZE[1] - 50),
+                                               (self.SCREEN_SIZE[0]//2), MIDNIGHT_BLUE))
+        self.add(Rectangle(self.tect_box.topleft, self.tect_box.size, GOLD, Rectangle.BORDER))
 
 if __name__ == '__main__':
     Lamacorp().run()

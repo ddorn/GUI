@@ -51,6 +51,10 @@ class BaseWidget(pygame.Rect):
 
     def __getattribute__(self, item):
 
+        # we need to update the attrs in case they are defined with a callback
+        # so all have the right value at anytime
+        # TODO : cache them for the whole frame, so there wont be unnecessary calls
+
         # positions
         if item in "x y top left bottom right topleft bottomleft topright bottomright midtop midleft midbottom " \
                    "midright center centerx centery".split():
@@ -63,14 +67,14 @@ class BaseWidget(pygame.Rect):
         return super(BaseWidget, self).__getattribute__(item)
 
     def __setattr__(self, key, value):
-        if key in "topleft bottomleft topright bottomright midtop midleft midbottom midright center".split():
+        if key in (TOPLEFT, BOTTOMLEFT, TOPRIGHT, BOTTOMRIGHT, MIDTOP, MIDLEFT, MIDBOTTOM, MIDRIGHT, CENTER):
             self.anchor = key
             self.pos = value
 
-        elif key in "width height w h".split():
+        elif key in ('width', 'height', 'w', 'h'):
             raise AttributeError("Can't set the attribute")
 
-        elif key in "x y top left bottom right centerx centery".split():
+        elif key in ('x', 'y', 'top', 'left', 'bottom', 'right', 'centerx', 'centery'):
             raise AttributeError("Can't set the attribute")
 
         else:

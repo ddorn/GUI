@@ -93,7 +93,7 @@ class Button(BaseButton):
     NO_ROUNDING = 16
     NO_HOVER = 32
 
-    def __init__(self, func, pos, size, text='', color=ORANGE, anchor=CENTER, flags=0):
+    def __init__(self, func, pos, size, text='', color=GREEN, anchor=CENTER, flags=0):
         """
         Creates a clickable button.
         

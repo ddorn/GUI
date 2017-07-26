@@ -52,8 +52,9 @@ def gui():
         print('login:', login.text)
         print('pass:', passw.text)
 
-    sign_up = Button(sup, passw.topright + Sep(5, 0), (100, passw.height), 'Sign Up', YELLOW, anchor=TOPLEFT)
-    sign_in = Button(sin, sign_up.topright, (100, passw.height), 'Sign In', GREEN, anchor=TOPLEFT)
+    style = Button.NO_ROUNDING | Button.NO_MOVE | Button.NO_SHADOW
+    sign_up = Button(sup, passw.topright + Sep(5, 0), (100, passw.height), 'Sign Up', YELLOW, anchor=TOPLEFT, flags=style)
+    sign_in = Button(sin, sign_up.topright, (100, passw.height), 'Sign In', GREEN, anchor=TOPLEFT, flags=style)
 
     focus = FocusSelector(login, passw, sign_up, sign_in)
     focus.select(0)
@@ -86,6 +87,7 @@ def gui():
 
                 elif e.key == K_RETURN:
                     if focus.selected() in (sign_up, sign_in):
+                        print(focus.selected())
                         focus.selected().click(40)
                     else:
                         focus.next()

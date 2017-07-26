@@ -28,18 +28,17 @@ def gui():
     while run:
         mouse = pygame.mouse.get_pos()
         for event in pygame.event.get():
+
+            red.update(event)
+
             if event.type == pygame.QUIT:
                 run = False
 
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            elif event.type == pygame.MOUSEBUTTONDOWN:
                 if mouse in sb:
                     sb.focus()
 
-                if mouse in red:
-                    red.click()
-
-            if event.type == pygame.MOUSEBUTTONUP:
-                red.release()
+            elif event.type == pygame.MOUSEBUTTONUP:
                 sb.unfocus()
 
         display.fill(WHITE)
